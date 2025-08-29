@@ -1,8 +1,116 @@
-# English School Platform
+# English School Platform API
 
-## Description
+A comprehensive .NET 9 Web API for managing an English school system with admin panel functionality.
 
-The **EnglishSchoolPlatform** is a web-based system designed to facilitate the management and operation of an online English language school. It supports features for students, teachers, administrators, and general users. The platform allows for efficient scheduling, course management, communication, and monitoring of student progress. It also includes a secure authentication system, multi-role authorization, and UI designed for both learners and educators.
+## Project Structure
+
+The project follows Clean Architecture principles with clear separation of concerns across multiple layers:
+
+```
+EnglishSchoolPlatform/
+├── Domain/                  # Domain layer - Entities, Repositories, Data contracts
+│   ├── Entities/           # Domain entities (User, Teacher, Student, Admin)
+│   ├── Repositories/       # Repository interfaces
+│   └── Data/              # DbContext and Unit of Work
+├── Application/            # Application layer - Business logic, DTOs, Services
+│   ├── DTOs/              # Data Transfer Objects
+│   ├── Services/          # Application services
+│   ├── Mappings/          # AutoMapper profiles
+│   └── Validation/        # FluentValidation validators
+├── Infrastructure/         # Infrastructure layer - Cross-cutting concerns
+│   └── Middleware/        # Custom middleware
+└── Web/                   # Presentation layer - Controllers, Program.cs
+    └── Controllers/       # API controllers
+```
+
+## Features
+
+### Core Entities
+- **User**: Base user with email, password, role, and creation date
+- **Admin**: Administrative users linked to base User
+- **Teacher**: Teachers with subject and experience information
+- **Student**: Students with level and date of birth
+
+### Implemented User Stories
+- **US1E1**: Add a new User
+- **US2E1**: Get User by ID  
+- **US3E1**: Update User information
+- **US4E1**: Delete User
+- **US5E1**: Create Teacher profile
+- **US6E1**: Get all Teachers
+- **US7E1**: Update Teacher information
+- **US8E1**: Delete Teacher
+- **US9E1**: Create Student profile
+- **US10E1**: Get all Students
+- **US11E1**: Update Student information
+- **US12E1**: Delete Student
+- **US13E1**: Global error handling
+
+### Technical Features
+- **N-Layer Architecture** with clean separation of concerns
+- **Repository Pattern** with Unit of Work
+- **AutoMapper** for object mapping
+- **FluentValidation** for input validation
+- **Entity Framework Core** with SQL Server
+- **Global Exception Handling** middleware
+- **Response Caching** (1 minute for GET endpoints)
+- **Swagger/OpenAPI** documentation
+- **SOLID principles** implementation
+
+## API Endpoints
+
+### Users
+- `POST /api/users` - Create new user
+- `GET /api/users/{id}` - Get user by ID
+- `GET /api/users` - Get all users
+- `PUT /api/users` - Update user
+- `DELETE /api/users/{id}` - Delete user
+
+### Teachers  
+- `POST /api/teachers` - Create teacher
+- `GET /api/teachers/{id}` - Get teacher by ID
+- `GET /api/teachers` - Get all teachers
+- `PUT /api/teachers` - Update teacher
+- `DELETE /api/teachers/{id}` - Delete teacher
+
+### Students
+- `POST /api/students` - Create student
+- `GET /api/students/{id}` - Get student by ID  
+- `GET /api/students` - Get all students
+- `PUT /api/students` - Update student
+- `DELETE /api/students/{id}` - Delete student
+
+## Getting Started
+
+### Prerequisites
+- .NET 9.0 SDK
+- SQL Server (LocalDB or full instance)
+- Visual Studio 2022 or VS Code
+
+### Running the Application
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd EnglishSchoolPlatform
+   ```
+
+2. **Restore dependencies**
+   ```bash
+   dotnet restore
+   ```
+
+3. **Update database connection string**
+   Edit `Web/appsettings.json` and update the `DefaultConnection` string if needed.
+
+4. **Run the application**
+   ```bash
+   cd Web
+   dotnet run
+   ```
+
+5. **Access Swagger UI**
+   Navigate to `https://localhost:7xxx/swagger` to explore the API.
 
 ## Application Features
 
