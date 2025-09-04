@@ -1,11 +1,8 @@
-# English School Platform API
-
-A comprehensive .NET 9 Web API for managing an English school system with admin panel functionality.
+# English School Platform
 
 ## Description
 
-The **English School Platform** is a modern web application designed to support online education and communication between students, teachers, and administrators.  
-It provides a complete digital ecosystem for managing lessons, homework, calendars, and profiles, while also leveraging AI to enhance the learning experience.  
+The **EnglishSchoolPlatform** is a web-based system designed to facilitate the management and operation of an online English language school. It supports features for students, teachers, administrators, and general users. The platform allows for efficient scheduling, course management, communication, and monitoring of student progress. It also includes a secure authentication system, multi-role authorization, and UI designed for both learners and educators. It provides a complete digital ecosystem for managing lessons, homework, calendars, and profiles, while also leveraging AI to enhance the learning experience.  
 
 ## Application Features
 
@@ -29,7 +26,7 @@ As a result of completing this task, you will receive an application that includ
 
 ## .NET Platform
 
-This project is built with the .NET 9 SDK and supports development using Visual Studio 2022 or Visual Studio Code with the .NET Core CLI.
+This project is built with the .NET 8 SDK and supports development using Visual Studio 2022 or Visual Studio Code with the .NET Core CLI.
 
 ## Branching
 
