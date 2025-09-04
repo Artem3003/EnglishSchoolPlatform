@@ -373,11 +373,15 @@ Type: DELETE
 ```
 
 ## Non-functional requirement (Optional)
+
 **NFR1E1**
 Implement Repository and Unit of Work patterns.
+
 **NFR2E1**
 Use Entity Framework Core (latest stable version).
+
 **NFR3E1**
 Enable response caching for GET endpoints (1 minute).
+
 **NFR4E1**
 Swagger UI should be accessible at /swagger.
