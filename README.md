@@ -46,6 +46,4 @@ The application is divided into multiple epics. Each epic corresponds to a featu
 | 10.  | Notifications | Add support for real-time or scheduled notifications. | [english-school-epic-10](epic-10.md) |
 | 11.  | NoSQL Integration | Use a NoSQL database for storing unstructured data. | [english-school-epic-11](epic-11.md) |
 | 12.  | UI Design [Angular] | Apply the given design mock-ups using Angular. | [english-school-epic-12](epic-12.md) |
-|      | UI Design [React] | Apply the given design mock-ups using React. | [english-school-epic-12-react](epic-12.md) |
 | 13.  | Localization [Angular] | Add multi-language support using Angular. | [english-school-epic-13](epic-13.md) |
-|      | Localization [React] | Add multi-language support using React. | [english-school-epic-13-react](epic-13.md) |
