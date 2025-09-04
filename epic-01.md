@@ -68,10 +68,12 @@ Navigation properties
 * **DueDate**: DateTime, required  
 * **CreatedAt**: DateTime, required  
 * **LessonId**: Guid, optional  
-* **Lesson**: Lesson?  
+* **Lesson**: Lesson
 
 Navigation properties:
-* List of HomeworkAssignments 
+* List of HomeworkAssignments
+
+Homework-Lesson combinations are unique.
 
 ---
 
@@ -96,7 +98,6 @@ Navigation properties:
 * **StartDateTime**: DateTime, required  
 * **EndDateTime**: DateTime, required  
 * **Type**: EventType, required  
-* **Color**: string, optional  
 * **LessonId**: Guid, optional  
 * **Lesson**: Lesson  
 
