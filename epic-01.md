@@ -1,21 +1,23 @@
-# Epic 1 - Admin Panel with Services
+# Epic 1 - Lesson Management System
 
 ## Description
 
-This epic focuses on building an **Admin Panel** and essential backend services that provide core functionality for managing an English school system.
+The Lesson Management System provides a backend service for managing educational activities such as lessons, homework, student attendance, and calendar events.  
+It is designed for schools, online education platforms, or training centers where teachers and students interact through lessons, assignments, and schedules.  
 
-Admins should be able to create, update, and delete users, teachers, students, and assign user roles accordingly. The system must follow best practices in architecture, coding standards, and security.
+The system enables teachers to schedule and manage lessons, assign and grade homework, track student attendance, and organize events in a shared calendar.  
+Students can view their lessons, submit homework, and access events or deadlines.
 
 ## General Requirements
 
 The system should support the following features:
 
-- Get student/teacher by ID.
-- Get all students or all teachers.
-- CRUD operations for **Users**, **Students**, **Teachers**, and **Admins**.
-- Global error handling for clean API responses.
-- Role-based access via ASP.NET Identity.
-- Validation using FluentValidation.
+* CRUD for lessons.  
+* CRUD for homework.  
+* CRUD for homework assignments.  
+* CRUD for student lessons (attendance).  
+* CRUD for calendar events.  
+* Global error handling.  
 
 ### Technical Specifications
 
@@ -29,144 +31,345 @@ The system should support the following features:
 
 ## Entities
 
-### User
+**Lesson**:
+* **Id**: Guid, required, unique  
+* **Title**: string, required  
+* **Description**: string, required  
+* **ScheduledDateTime**: DateTime, required  
+* **DurationMinutes**: int, required  
+* **Type**: LessonType, required  
+* **Status**: LessonStatus, required  
+* **MeetingLink**: string, optional  
+* **Materials**: string, optional  
+* **CreatedAt**: DateTime, required
 
-- **Id**: `Guid`, required, unique  
-- **Email**: `string`, required, unique  
-- **PasswordHash**: `string`, required  
-- **Role**: `enum (Admin, Teacher, Student)`, required  
-- **CreatedAt**: `DateTime`, required
+Navigation properties 
+* List of StudentLessons  
+* List of Homeworks  
+* List of CalendarEvents  
 
-### Admin
+---
 
-- **Id**: `Guid`, required, unique  
-- **UserId**: `Guid`, required (FK to `User`)
+**StudentLesson**:
+* **Id**: Guid, required, unique  
+* **LessonId**: Guid, required  
+* **Lesson**: Lesson  
+* **AttendanceStatus**: AttendanceStatus, required  
+* **Notes**: string, optional  
+* **AttendedAt**: DateTime, optional  
 
-### Teacher
+---
 
-- **Id**: `Guid`, required, unique  
-- **UserId**: `Guid`, required (FK to `User`)  
-- **Subject**: `string`, required  
-- **ExperienceYears**: `int`, optional
+**Homework**:
+* **Id**: Guid, required, unique  
+* **Title**: string, required  
+* **Description**: string, required  
+* **Instructions**: string, required  
+* **DueDate**: DateTime, required  
+* **CreatedAt**: DateTime, required  
+* **LessonId**: Guid, optional  
+* **Lesson**: Lesson?  
 
-### Student
+Navigation properties:
+* List of HomeworkAssignments 
 
-- **Id**: `Guid`, required, unique  
-- **UserId**: `Guid`, required (FK to `User`)  
-- **Level**: `string`, optional  
-- **DateOfBirth**: `DateTime`, optional
+---
 
-## Task Description
+**HomeworkAssignment**:
+* **Id**: Guid, required, unique  
+* **HomeworkId**: Guid, required  
+* **Homework**: Homework  
+* **SubmissionText**: string, optional  
+* **AttachmentUrl**: string, optional  
+* **SubmittedAt**: DateTime, optional  
+* **Status**: AssignmentStatus, required  
+* **Grade**: int, optional  
+* **TeacherFeedback**: string, optional  
+* **GradedAt**: DateTime, optional  
 
-Implement the Admin API to support managing users, teachers, and students. Follow clean architecture and code quality standards.
+---
+
+**CalendarEvent**:
+* **Id**: Guid, required, unique  
+* **Title**: string, required  
+* **Description**: string, optional  
+* **StartDateTime**: DateTime, required  
+* **EndDateTime**: DateTime, required  
+* **Type**: EventType, required  
+* **Color**: string, optional  
+* **LessonId**: Guid, optional  
+* **Lesson**: Lesson  
+
+---
+
+### Enums
+
+**LessonType**:
+* Individual  
+* Group  
+* Workshop  
+
+**LessonStatus**:
+* Scheduled  
+* InProgress  
+* Completed  
+* Cancelled  
+
+**AttendanceStatus**:
+* Present  
+* Absent  
+* Late  
+
+**AssignmentStatus**:
+* Assigned  
+* InProgress  
+* Submitted  
+* Graded  
+* Late  
+
+**EventType**:
+* Lesson  
+* Assignment  
+* Exam  
+* Holiday  
+* Personal  
 
 ---
 
 ## User Stories
 
-### US1E1
-Add a new User
+### US1E1 - User story 1
+Add a new Lesson endpoint
+```{xml}
+Url: /lessons
+Type: POST
+Request Example:
+"lesson": {
+  "title": "English lesson",
+  "description": "Present Simple",
+  "scheduledDateTime": "2025-09-01T10:00:00",
+  "durationMinutes": 60,
+  "teacherId": "teacher-123",
+  "type": "Individual",
+  "status": "Scheduled"
+}
+```
+
+### US2E1 - User story 2
+Get Lesson by id endpoint
 ```{xml} 
-POST /users
+Url: /lessons/{id}
+Type: GET
+Response Example:
 {
-  "email": "admin@school.com",
-  "password": "StrongPassword123!",
-  "role": "Admin"
+  "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+  "title": "English Lesson",
+  "description": "Present Simple",
+  "scheduledDateTime": "2025-09-01T10:00:00",
+  "durationMinutes": 60,
+  "teacherId": "teacher-123",
+  "type": "Individual",
+  "status": "Scheduled"
 }
 ```
-### US2E1
-Get a User by ID
+
+Get all Lessons endpoint
 ```{xml} 
-GET /users/{id}
+Url: /lessons
+Type: GET
+Response Example:
+[
+  {
+    "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "title": "Math Lesson",
+    "description": "Algebra basics"
+  }
+]
+```
+
+### US3E1 - User story 3
+Update a Lesson endpoint
+```{xml}
+Url: /lessons
+Type: PUT
+Request Example:
 {
-  "id": "f0a2ab11-d2a2-4413-aef3-888e198b2a72",
-  "email": "admin@school.com",
-  "role": "Admin",
-  "createdAt": "2025-07-01T10:30:00Z"
+  "lesson": {
+    "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "title": "Advanced Math Lesson",
+    "description": "Linear equations",
+    "status": "InProgress"
+  }
+}"role": "Admin"
 }
 ```
-### US3E1
-Update a User
+
+### US4E1 - User story 4
+Delete a Lesson endpoint
 ```{xml}
-PUT /users
+Url: /lessons/{id}
+Type: DELETE
+```
+
+### US5E1 - User story 5
+Add a Homework endpoint
+```{xml}
+Url: /homeworks
+Type: POST
+Request Example:
 {
-  "id": "f0a2ab11-d2a2-4413-aef3-888e198b2a72",
-  "email": "newadmin@school.com",
-  "role": "Admin"
+  "homework": {
+    "title": "Homework 1",
+    "description": "Solve problems",
+    "instructions": "Page 10, tasks 1-5",
+    "dueDate": "2025-09-10T23:59:00",
+    "teacherId": "teacher-123",
+    "lessonId": 1
+  }
 }
 ```
-### US4E1
-Delete a User
+
+### US6E1 - - User story 6
+Get Homework by id endpoint
 ```{xml}
-DELETE /users/{id}
-```
-### US5E1
-Create a Teacher
-```{xml}
-POST /teachers
+Url: /homeworks/{id}
+Type: GET
+Response Example:
 {
-  "userId": "f0a2ab11-d2a2-4413-aef3-888e198b2a72",
-  "subject": "English Grammar",
-  "experienceYears": 5
+  "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+  "title": "Homework 1",
+  "description": "Solve problems",
+  "instructions": "Page 10, tasks 1-5",
+  "dueDate": "2025-09-10T23:59:00"
 }
 ```
-### US6E1
-Get All Teachers
+
+Get all Homeworks endpoint
 ```{xml}
-GET /teachers
+Url: /homeworks
+Type: GET
+Response Example:
+[
+  {
+    "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "title": "Homework 1"
+  }
+]
+
 ```
-### US7E1
-Update a Teacher
+### US7E1 - User story 7
+Update Homework endpoint
 ```{xml} 
-PUT /teachers
+Url: /homeworks
+Type: PUT
+Request Example:
 {
-  "id": "e8b3d1c6-9b9a-4d21-bd04-8f69aeab201c",
-  "subject": "Speaking and Listening",
-  "experienceYears": 6
+  "homework": {
+    "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "title": "Homework 1 Updated",
+    "description": "Updated tasks"
+  }
 }
 ```
-### US8E1
-Delete a Teacher
+
+### US8E1 - User story 8
+Delete Homework endpoint
 ```{xml}
-DELETE /teachers/{id}
+Url: /homeworks/{id}
+Type: DELETE
 ```
-### US9E1
-Create a Student
+
+### US9E1 - User story 9
+Add a Homework Assignment endpoint
 ```{xml}
-POST /students
+Url: /assignments
+Type: POST
+Request Example:
 {
-  "userId": "ad2c77de-4f0b-44b6-a2b6-00e09a259c3f",
-  "level": "B2",
-  "dateOfBirth": "2005-06-15"
+  "assignment": {
+    "homeworkId": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "studentId": "student-123"
+  }
 }
 ```
-### US10E1
-Get All Students
+
+### US10E1 - - User story 10
+Submit Homework Assignment endpoint
 ```{xml}
-GET /students
-```
-### US11E1
-Update a Student
-```{xml}
-PUT /students
+Url: /assignments/{id}/submit
+Type: PUT
+Request Example:
 {
-  "id": "ea5933a2-091a-4c47-b27f-abc762dc84d6",
-  "level": "C1"
+  "submissionText": "Solution",
+  "attachmentUrl": "http://file.com/solution.pdf"
+}
+```
+
+### US11E1 -- User story 11
+Grade Homework Assignment endpoint
+```{xml}
+Url: /assignments/{id}/grade
+Type: PUT
+Request Example:
+{
+  "grade": 95,
+  "teacherFeedback": "Great work!"
 }
 ``` 
-### US12E1
-Delete a Student
+
+### US12E1 - - User story 12
+Add Calendar Event endpoint
 ```{xml}
-DELETE /students/{id}
-```
-### US13E1
-Global Error Handling
-```{xml}
+Url: /calendar
+Type: POST
+Request Example:
 {
-  "status": 400,
-  "message": "Validation failed",
-  "details": ["Email is required", "Password must be at least 8 characters"]
+  "event": {
+    "title": "Exam",
+    "description": "Math final exam",
+    "startDateTime": "2025-09-15T10:00:00",
+    "endDateTime": "2025-09-15T12:00:00",
+    "type": "Exam",
+    "userId": "30dd879c-ee2f-11db-8314-0800200c9a66"
+  }
 }
+```
+
+### US13E1 - User story 13
+Get Calendar Events by user endpoint
+```{xml}
+Url: /calendar/user/{userId}
+Type: GET
+Response Example:
+[
+  {
+    "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "title": "Exam",
+    "type": "Exam"
+  }
+]
+```
+
+### US14E1 - User story 14
+Update Calendar Event endpoint
+```{xml}
+Url: /calendar
+Type: PUT
+Request Example:
+{
+  "event": {
+    "id": "30dd879c-ee2f-11db-8314-0800200c9a66",
+    "title": "Exam Updated",
+    "description": "New room"
+  }
+}
+```
+
+### US15E1 - User story 15
+Delete Calendar Event endpoint
+```{xml}
+Url: /calendar/{id}
+Type: DELETE
 ```
 
 ## Non-functional requirement (Optional)
