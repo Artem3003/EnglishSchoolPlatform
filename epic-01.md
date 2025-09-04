@@ -46,17 +46,7 @@ The system should support the following features:
 Navigation properties 
 * List of StudentLessons  
 * List of Homeworks  
-* List of CalendarEvents  
-
----
-
-**StudentLesson**:
-* **Id**: Guid, required, unique  
-* **LessonId**: Guid, required  
-* **Lesson**: Lesson  
-* **AttendanceStatus**: AttendanceStatus, required  
-* **Notes**: string, optional  
-* **AttendedAt**: DateTime, optional  
+* List of CalendarEvents
 
 ---
 
@@ -67,11 +57,15 @@ Navigation properties
 * **Instructions**: string, required  
 * **DueDate**: DateTime, required  
 * **CreatedAt**: DateTime, required  
-* **LessonId**: Guid, optional  
-* **Lesson**: Lesson
 
 Navigation properties:
 * List of HomeworkAssignments
+
+---
+
+**LessonHomework**:
+* **LessonId**: Guid, required
+* **HomeworkId**: Guid, required
 
 Homework-Lesson combinations are unique.
 
