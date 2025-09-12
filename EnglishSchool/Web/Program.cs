@@ -1,12 +1,9 @@
 using Application.Interfaces;
 using Application.Mappings;
 using Application.Services;
-using Application.Validation;
 using Domain.Data;
 using Domain.Interfaces;
 using Domain.Repositories;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Infrastructure.Middleware;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,25 +12,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 
-// FluentValidation
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
-
 // Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Repository and Unit of Work
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
+builder.Services.AddScoped<IHomeworkAssignmentRepository, HomeworkAssignmentRepository>();
+builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<IStudentLessonRepository, StudentLessonRepository>();
 
 // Application Services
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITeacherService, TeacherService>();
-builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
+builder.Services.AddScoped<IHomeworkAssignmentService, HomeworkAssignmentService>();
+builder.Services.AddScoped<IHomeworkService, HomeworkService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -49,7 +44,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "English School Platform API",
         Version = "v1",
-        Description = "Admin Panel API for English School Management System"
+        Description = "Admin Panel API for English School Management System",
     });
 });
 
