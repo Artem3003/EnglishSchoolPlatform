@@ -1,3 +1,4 @@
+using Application.Constants;
 using Application.Interfaces;
 using Application.Mappings;
 using Application.Services;
@@ -34,7 +35,8 @@ builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Memory Cache
-builder.Services.AddMemoryCache();
+builder.Services.Configure<CacheSettings>(
+    builder.Configuration.GetSection("CacheSettings"));
 
 // Response Caching
 builder.Services.AddResponseCaching();
