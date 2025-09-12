@@ -31,7 +31,7 @@ public class GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<Glo
         {
             status = (int)HttpStatusCode.InternalServerError,
             message = "An error occurred while processing your request",
-            details = new[] { exception.Message }
+            details = new[] { exception.Message },
         };
 
         switch (exception)
@@ -41,7 +41,7 @@ public class GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<Glo
                 {
                     status = (int)HttpStatusCode.BadRequest,
                     message = "Bad request",
-                    details = new[] { exception.Message }
+                    details = new[] { exception.Message },
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 break;
@@ -50,7 +50,7 @@ public class GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<Glo
                 {
                     status = (int)HttpStatusCode.NotFound,
                     message = "Resource not found",
-                    details = new[] { exception.Message }
+                    details = new[] { exception.Message },
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;

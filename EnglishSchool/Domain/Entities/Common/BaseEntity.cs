@@ -1,6 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Domain.Entities.Common;
 
-public abstract class BaseEntity
+public abstract class BaseEntity<TId>
 {
-    public Guid Id { get; set; }
+    [Key]
+    public TId? Id { get; set; }
 }

@@ -1,4 +1,3 @@
-using Domain.Repositories;
 using Domain.Interfaces;
 
 namespace Domain.Data;
@@ -6,15 +5,6 @@ namespace Domain.Data;
 public class UnitOfWork(ApplicationDbContext context) : IUnitOfWork
 {
     private readonly ApplicationDbContext _context = context;
-    private IUserRepository? _users;
-    private ITeacherRepository? _teachers;
-    private IStudentRepository? _students;
-    private IAdminRepository? _admins;
-
-    public IUserRepository Users => _users ??= new UserRepository(_context);
-    public ITeacherRepository Teachers => _teachers ??= new TeacherRepository(_context);
-    public IStudentRepository Students => _students ??= new StudentRepository(_context);
-    public IAdminRepository Admins => _admins ??= new AdminRepository(_context);
 
     public async Task<int> SaveChangesAsync()
     {
