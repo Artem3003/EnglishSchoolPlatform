@@ -31,7 +31,108 @@ The system should support the following features:
 
 ## Entities
 
-сс
+**Lesson**:
+* **Id**: Guid, required, unique  
+* **Title**: string, required  
+* **Description**: string, required  
+* **ScheduledDateTime**: DateTime, required  
+* **DurationMinutes**: int, required  
+* **Type**: LessonType, required  
+* **Status**: LessonStatus, required  
+* **MeetingLink**: string, optional  
+* **Materials**: string, optional  
+* **CreatedAt**: DateTime, required
+
+Navigation properties 
+* List of StudentLessons  
+* List of Homeworks  
+* List of CalendarEvents  
+
+---
+
+**StudentLesson**:
+* **Id**: Guid, required, unique  
+* **LessonId**: Guid, required  
+* **Lesson**: Lesson  
+* **AttendanceStatus**: AttendanceStatus, required  
+* **Notes**: string, optional  
+* **AttendedAt**: DateTime, optional  
+
+---
+
+**Homework**:
+* **Id**: Guid, required, unique  
+* **Title**: string, required  
+* **Description**: string, required  
+* **Instructions**: string, required  
+* **DueDate**: DateTime, required  
+* **CreatedAt**: DateTime, required  
+* **LessonId**: Guid, optional  
+* **Lesson**: Lesson?  
+
+Navigation properties:
+* List of HomeworkAssignments 
+
+---
+
+**HomeworkAssignment**:
+* **Id**: Guid, required, unique  
+* **HomeworkId**: Guid, required  
+* **Homework**: Homework  
+* **SubmissionText**: string, optional  
+* **AttachmentUrl**: string, optional  
+* **SubmittedAt**: DateTime, optional  
+* **Status**: AssignmentStatus, required  
+* **Grade**: int, optional  
+* **TeacherFeedback**: string, optional  
+* **GradedAt**: DateTime, optional  
+
+---
+
+**CalendarEvent**:
+* **Id**: Guid, required, unique  
+* **Title**: string, required  
+* **Description**: string, optional  
+* **StartDateTime**: DateTime, required  
+* **EndDateTime**: DateTime, required  
+* **Type**: EventType, required  
+* **Color**: string, optional  
+* **LessonId**: Guid, optional  
+* **Lesson**: Lesson  
+
+---
+
+### Enums
+
+**LessonType**:
+* Individual  
+* Group  
+* Workshop  
+
+**LessonStatus**:
+* Scheduled  
+* InProgress  
+* Completed  
+* Cancelled  
+
+**AttendanceStatus**:
+* Present  
+* Absent  
+* Late  
+
+**AssignmentStatus**:
+* Assigned  
+* InProgress  
+* Submitted  
+* Graded  
+* Late  
+
+**EventType**:
+* Lesson  
+* Assignment  
+* Exam  
+* Holiday  
+* Personal  
 
 ---
 
