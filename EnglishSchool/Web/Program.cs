@@ -33,6 +33,9 @@ builder.Services.AddScoped<ILessonService, LessonService>();
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// Memory Cache
+builder.Services.AddMemoryCache();
+
 // Response Caching
 builder.Services.AddResponseCaching();
 
