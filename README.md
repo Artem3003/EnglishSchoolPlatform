@@ -48,6 +48,3 @@ The application is divided into multiple epics. Each epic corresponds to a featu
 | 12.  | Notifications [Microsoft Azure] | Implement user notifications for important events. | [game-store-epic-12](epic-12.md) |
 | 13.  | UI Design [Angular] | Apply UI designs based on given mock-ups. | [game-store-epic-13](epic-13.md) |
 | 14.  | Localization [Angular]| Support multiple languages for the application. | [game-store-epic-14](epic-14.md) |
-
-
-
