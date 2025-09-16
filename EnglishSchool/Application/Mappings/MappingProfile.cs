@@ -12,14 +12,11 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         // Lesson
-        CreateMap<Lesson, LessonDto>()
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+        CreateMap<Lesson, LessonDto>();
         CreateMap<CreateLessonDto, Lesson>()
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => Enum.Parse<Domain.Entities.Enums.LessonType>(src.Type)))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<Domain.Entities.Enums.LessonStatus>(src.Status)));
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
         CreateMap<UpdateLessonDto, Lesson>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<Domain.Entities.Enums.LessonStatus>(src.Status)));
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         // Homework
         CreateMap<Homework, HomeworkDto>();
@@ -29,14 +26,22 @@ public class MappingProfile : Profile
         // HomeworkAssignment
         CreateMap<HomeworkAssignment, HomeworkAssignmentDto>();
         CreateMap<CreateHomeworkAssignmentDto, HomeworkAssignment>();
-        CreateMap<SubmitHomeworkAssignmentDto, HomeworkAssignment>();
-        CreateMap<GradeHomeworkAssignmentDto, HomeworkAssignment>();
+        CreateMap<UpdateHomeworkAssignmentDto, HomeworkAssignment>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<SubmitHomeworkAssignmentDto, HomeworkAssignment>()
+            .ForMember(dest => dest.SubmittedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Domain.Entities.Enums.AssignmentStatus.Submitted))
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<GradeHomeworkAssignmentDto, HomeworkAssignment>()
+            .ForMember(dest => dest.GradedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Domain.Entities.Enums.AssignmentStatus.Graded))
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         // CalendarEvent
         CreateMap<CalendarEvent, CalendarEventDto>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()));
         CreateMap<CreateCalendarEventDto, CalendarEvent>()
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => Enum.Parse<Domain.Entities.Enums.EventType>(src.Type)));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => Enum.Parse<Domain.Entities.Enums.EventType>(src.Type.ToString())));
         CreateMap<UpdateCalendarEventDto, CalendarEvent>();
     }
 }
