@@ -35,6 +35,7 @@ builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Memory Cache
+builder.Services.AddMemoryCache();
 builder.Services.Configure<CacheSettings>(
     builder.Configuration.GetSection("CacheSettings"));
 
