@@ -25,6 +25,7 @@ public class LessonService(IUnitOfWork unitOfWork, ILessonRepository lessonRepos
 
         var lessonDto = _mapper.Map<LessonDto>(lesson);
         _memoryCache.Set(CacheKeys.Lessons, lessonDto, TimeSpan.FromMinutes(_cacheExpirationMinutes));
+        _memoryCache.Remove(CacheKeys.TotalLessonsCount);
 
         return lesson.Id;
     }
@@ -49,6 +50,20 @@ public class LessonService(IUnitOfWork unitOfWork, ILessonRepository lessonRepos
         return _mapper.Map<IEnumerable<LessonDto>>(lessons) ?? [];
     }
 
+    public async Task<int> GetTotalLessonsCountAsync()
+    {
+        if (_memoryCache.TryGetValue(CacheKeys.TotalLessonsCount, out int cachedCount))
+        {
+            return cachedCount;
+        }
+
+        var totalLessons = await _lessonRepository.CountLessonsAsync();
+
+        _memoryCache.Set(CacheKeys.TotalLessonsCount, totalLessons, TimeSpan.FromMinutes(_cacheExpirationMinutes));
+
+        return totalLessons;
+    }
+
     public async Task UpdateLessonAsync(UpdateLessonDto dto)
     {
         var lesson = await _lessonRepository.GetByIdAsync(dto.Id) ?? throw new KeyNotFoundException($"Lesson with ID {dto.Id} not found.");
@@ -57,6 +72,7 @@ public class LessonService(IUnitOfWork unitOfWork, ILessonRepository lessonRepos
         await _unitOfWork.SaveChangesAsync();
 
         _memoryCache.Remove(CacheKeys.Lessons);
+        _memoryCache.Remove(CacheKeys.TotalLessonsCount);
     }
 
     public async Task DeleteLessonAsync(Guid id)
@@ -66,5 +82,6 @@ public class LessonService(IUnitOfWork unitOfWork, ILessonRepository lessonRepos
         await _unitOfWork.SaveChangesAsync();
 
         _memoryCache.Remove(CacheKeys.Lessons);
+        _memoryCache.Remove(CacheKeys.TotalLessonsCount);
     }
 }
