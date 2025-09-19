@@ -6,6 +6,7 @@ namespace Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Tags("Lessons Management")]
 public class LessonsController(ILessonService lessonService) : ControllerBase
 {
     private readonly ILessonService _lessonService = lessonService;

@@ -49,8 +49,44 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
         Title = "English School Platform API",
-        Version = "v1",
-        Description = "Admin Panel API for English School Management System",
+        Version = "v1.0.0",
+        Description = "Comprehensive API for English School Management System including lessons, homework, calendar events, and assignments management.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "English School Platform Support",
+            Email = "support@englishschool.com",
+        },
+    });
+
+    // Enable XML comments for better documentation
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+
+    // Configure Swagger to include all controller actions
+    c.DocInclusionPredicate((name, api) => true);
+
+    // Add operation tags for better organization
+    c.TagActionsBy(api =>
+    {
+        if (api.ActionDescriptor.RouteValues["controller"] != null)
+        {
+            var controller = api.ActionDescriptor.RouteValues["controller"];
+            return [controller switch
+            {
+                "Lessons" => "Lessons Management",
+                "Homeworks" => "Homework Management",
+                "Calendar" => "Calendar Events",
+                "Assignments" => "Homework Assignments",
+                _ => controller,
+            },
+        ];
+        }
+
+        return ["General"];
     });
 });
 
@@ -74,8 +110,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "English School Platform API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "English School Platform API v1.0.0");
         c.RoutePrefix = "swagger";
+        c.DocumentTitle = "English School Platform API Documentation";
+        c.DefaultModelsExpandDepth(-1);
+        c.DisplayRequestDuration();
+        c.EnableFilter();
+        c.EnableTryItOutByDefault();
+        c.ShowExtensions();
     });
 }
 

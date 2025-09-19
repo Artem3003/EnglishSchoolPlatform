@@ -6,6 +6,7 @@ namespace Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Tags("Calendar Events")]
 public class CalendarController(ICalendarEventService calendarEventService) : ControllerBase
 {
     private readonly ICalendarEventService _calendarEventService = calendarEventService;
