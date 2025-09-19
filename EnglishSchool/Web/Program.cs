@@ -61,7 +61,8 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .WithExposedHeaders("x-total-number-of-lessons");
     });
 });
 
@@ -82,7 +83,8 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-// Global Exception Handling Middleware
+// Middlewares
+app.UseMiddleware<TotalLessonsHeaderMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseResponseCaching();
@@ -91,4 +93,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

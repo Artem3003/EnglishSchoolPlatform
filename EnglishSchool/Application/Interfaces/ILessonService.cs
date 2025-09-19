@@ -10,6 +10,8 @@ public interface ILessonService
 
     Task<IEnumerable<LessonDto>> GetAllLessonsAsync();
 
+    Task<int> GetTotalLessonsCountAsync();
+
     Task UpdateLessonAsync(UpdateLessonDto dto);
 
     Task DeleteLessonAsync(Guid id);
