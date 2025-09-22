@@ -6,6 +6,7 @@ namespace Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Tags("Homework Management")]
 public class HomeworksController(IHomeworkService homeworkService) : ControllerBase
 {
     private readonly IHomeworkService _homeworkService = homeworkService;

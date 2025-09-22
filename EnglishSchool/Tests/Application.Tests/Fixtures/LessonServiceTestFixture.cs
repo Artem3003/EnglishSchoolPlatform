@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
@@ -28,7 +29,8 @@ public class LessonServiceTestFixture
             MockLessonRepository.Object,
             MockMapper.Object,
             MockCacheSettings.Object,
-            MockMemoryCache.Object);
+            MockMemoryCache.Object,
+            MockLogger.Object);
     }
 
     public Mock<IUnitOfWork> MockUnitOfWork { get; } = new();
@@ -40,6 +42,8 @@ public class LessonServiceTestFixture
     public Mock<IMemoryCache> MockMemoryCache { get; } = new();
 
     public Mock<IOptions<CacheSettings>> MockCacheSettings { get; } = new();
+
+    public Mock<ILogger<LessonService>> MockLogger { get; } = new();
 
     public LessonService LessonService { get; }
 
