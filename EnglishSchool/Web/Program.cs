@@ -7,11 +7,17 @@ using Domain.Interfaces;
 using Domain.Repositories;
 using Infrastructure.Middleware;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
+
+// Configure Serilog from appsettings.json
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 // Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -46,12 +52,12 @@ builder.Services.AddResponseCaching();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "English School Platform API",
-        Version = "v1.0.0",
+        Version = "v1",
         Description = "Comprehensive API for English School Management System including lessons, homework, calendar events, and assignments management.",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        Contact = new OpenApiContact
         {
             Name = "English School Platform Support",
             Email = "support@englishschool.com",
@@ -113,11 +119,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "English School Platform API v1.0.0");
         c.RoutePrefix = "swagger";
         c.DocumentTitle = "English School Platform API Documentation";
-        c.DefaultModelsExpandDepth(-1);
-        c.DisplayRequestDuration();
-        c.EnableFilter();
-        c.EnableTryItOutByDefault();
-        c.ShowExtensions();
     });
 }
 
@@ -126,6 +127,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 // Middlewares
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<TotalLessonsHeaderMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 

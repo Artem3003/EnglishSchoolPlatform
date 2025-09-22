@@ -6,6 +6,7 @@ using Domain.Entities;
 using Domain.Entities.Enums;
 using Domain.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
@@ -28,7 +29,8 @@ public class HomeworkAssignmentServiceTestFixture
             MockHomeworkAssignmentRepository.Object,
             MockMapper.Object,
             MockCacheSettings.Object,
-            MockMemoryCache.Object);
+            MockMemoryCache.Object,
+            MockLogger.Object);
     }
 
     public Mock<IUnitOfWork> MockUnitOfWork { get; } = new();
@@ -40,6 +42,8 @@ public class HomeworkAssignmentServiceTestFixture
     public Mock<IMemoryCache> MockMemoryCache { get; } = new();
 
     public Mock<IOptions<CacheSettings>> MockCacheSettings { get; } = new();
+
+    public Mock<ILogger<HomeworkAssignmentService>> MockLogger { get; } = new();
 
     public HomeworkAssignmentService HomeworkAssignmentService { get; }
 
