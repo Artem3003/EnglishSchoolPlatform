@@ -1,0 +1,62 @@
+Summary
+  Generated on: 18.09.2025 - 16:55:05
+  Coverage date: 18.09.2025 - 16:44:31 - 18.09.2025 - 16:54:57
+  Parser: MultiReport (2x Cobertura)
+  Assemblies: 3
+  Classes: 36
+  Files: 36
+  Line coverage: 54.1%
+  Covered lines: 275
+  Uncovered lines: 233
+  Coverable lines: 508
+  Total lines: 1047
+  Branch coverage: 68% (34 of 50)
+  Covered branches: 34
+  Total branches: 50
+  Method coverage: 67.5% (129 of 191)
+  Full method coverage: 66.4% (127 of 191)
+  Covered methods: 129
+  Fully covered methods: 127
+  Total methods: 191
+
+Application                                                         79.5%
+  Application.Constants.CacheSettings                                100%
+  Application.DTOs.CalendarEvent.CalendarEventDto                    100%
+  Application.DTOs.CalendarEvent.CreateCalendarEventDto              100%
+  Application.DTOs.CalendarEvent.UpdateCalendarEventDto              100%
+  Application.DTOs.Homework.CreateHomeworkDto                        100%
+  Application.DTOs.Homework.HomeworkDto                              100%
+  Application.DTOs.Homework.UpdateHomeworkDto                          0%
+  Application.DTOs.HomeworkAssignment.CreateHomeworkAssignmentDto    100%
+  Application.DTOs.HomeworkAssignment.GradeHomeworkAssignmentDto     100%
+  Application.DTOs.HomeworkAssignment.HomeworkAssignmentDto          100%
+  Application.DTOs.HomeworkAssignment.SubmitHomeworkAssignmentDto    100%
+  Application.DTOs.HomeworkAssignment.UpdateHomeworkAssignmentDto      0%
+  Application.DTOs.Lesson.CreateLessonDto                           62.5%
+  Application.DTOs.Lesson.LessonDto                                   80%
+  Application.DTOs.Lesson.UpdateLessonDto                           55.5%
+  Application.Mappings.MappingProfile                                  0%
+  Application.Services.CalendarEventService                          100%
+  Application.Services.HomeworkAssignmentService                    93.6%
+  Application.Services.HomeworkService                              82.5%
+  Application.Services.LessonService                                 100%
+
+Domain                                                              21.1%
+  Domain.Data.ApplicationDbContext                                     0%
+  Domain.Data.UnitOfWork                                               0%
+  Domain.Entities.CalendarEvent                                     87.5%
+  Domain.Entities.Common.BaseEntity<T>                               100%
+  Domain.Entities.Homework                                          87.5%
+  Domain.Entities.HomeworkAssignment                                 100%
+  Domain.Entities.Lesson                                            83.3%
+  Domain.Entities.StudentLesson                                        0%
+  Domain.Repositories.AbstractRepository<T>                            0%
+  Domain.Repositories.CalendarEventRepository                          0%
+  Domain.Repositories.HomeworkAssignmentRepository                     0%
+  Domain.Repositories.HomeworkRepository                               0%
+  Domain.Repositories.LessonRepository                                 0%
+  Domain.Repositories.StudentLessonRepository                          0%
+
+Infrastructure                                                      14.8%
+  Infrastructure.Middleware.GlobalExceptionHandlingMiddleware          0%
+  Infrastructure.Middleware.TotalLessonsHeaderMiddleware            72.7%
