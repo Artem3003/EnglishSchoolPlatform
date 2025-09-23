@@ -36,8 +36,14 @@ The system should support the following features:
 - **Id**: Guid, required, unique
 - **CourseId**: Guid, required
 - **Title**: String, required
+- **Description**: string, required  
 - **ScheduledDateTime**: DateTime, required
+- **DurationMinutes**: int, required
+- **Type**: LessonType, required  
 - **Status**: Enum (Scheduled, InProgress, Completed, Cancelled)
+- **MeetingLink**: string, optional 
+- **Materials**: string, optional 
+- **CreatedAt**: DateTime, required
 
 ---
 
