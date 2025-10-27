@@ -1,0 +1,105 @@
+<div class="lessons-header">
+  <h2>{{ title }}</h2>
+  <button class="btn-primary" (click)="openCreateForm()">+ Add New Lesson</button>
+</div>
+
+@if (loading) {
+  <p>Loading lessons...</p>
+}
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+@if (!loading && !error && lessons.length === 0) {
+  <p class="empty-state">No lessons found. Click "Add New Lesson" to create one.</p>
+}
+
+<!-- Form Modal -->
+@if (showForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingLesson ? 'Edit Lesson' : 'Create New Lesson' }}</h3>
+        <button class="btn-close" (click)="closeForm()">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveLesson()" class="lesson-form">
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <input type="text" id="title" [(ngModel)]="lessonForm.title" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea id="description" [(ngModel)]="lessonForm.description" name="description" rows="3" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="durationMinutes">Duration (minutes) *</label>
+            <input type="number" id="durationMinutes" [(ngModel)]="lessonForm.durationMinutes" name="durationMinutes" min="1" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="type">Type *</label>
+            <select id="type" [(ngModel)]="lessonForm.type" name="type" required>
+              @for(type of lessonTypes; track type.value) {
+                <option [ngValue]="type.value">{{ type.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status *</label>
+            <select id="status" [(ngModel)]="lessonForm.status" name="status" required>
+              @for(status of lessonStatuses; track status.value) {
+                <option [ngValue]="status.value">{{ status.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="meetingLink">Meeting Link</label>
+          <input type="url" id="meetingLink" [(ngModel)]="lessonForm.meetingLink" name="meetingLink">
+        </div>
+
+        <div class="form-group">
+          <label for="materialsLink">Materials Link</label>
+          <input type="url" id="materialsLink" [(ngModel)]="lessonForm.materialsLink" name="materialsLink">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary">{{ editingLesson ? 'Update' : 'Create' }} Lesson</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+@if (!loading && !error && lessons.length > 0) {
+  <div class="lessons-grid">
+    @for(lesson of lessons; track lesson.id) {
+      <div class="lesson-card">
+        <div class="card-header">
+          <h3>{{ lesson.title }}</h3>
+          <div class="card-actions">
+            <button class="btn-icon btn-edit" (click)="openEditForm(lesson)" title="Edit">✏️</button>
+            <button class="btn-icon btn-delete" (click)="deleteLesson(lesson.id)" title="Delete">🗑️</button>
+          </div>
+        </div>
+        <p>{{ lesson.description }}</p>
+        <p><strong>Duration:</strong> {{ lesson.durationMinutes }} minutes</p>
+        <p><strong>Type:</strong> {{ getLessonTypeText(lesson.type) }}</p>
+        <p><strong>Status:</strong> {{ getLessonStatusText(lesson.status) }}</p>
+        @if (lesson.meetingLink) {
+          <p><strong>Meeting Link:</strong> <a [href]="lesson.meetingLink" target="_blank">Join</a></p>
+        }
+      </div>
+    }
+  </div>
+}

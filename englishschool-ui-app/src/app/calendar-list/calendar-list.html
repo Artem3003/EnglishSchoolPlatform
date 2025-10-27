@@ -1,0 +1,122 @@
+<div class="calendar-header">
+  <h2>{{ title }}</h2>
+  <div class="calendar-controls">
+    <button class="btn-secondary" (click)="previousWeek()">← Previous</button>
+    <button class="btn-secondary" (click)="today()">Today</button>
+    <button class="btn-secondary" (click)="nextWeek()">Next →</button>
+  </div>
+</div>
+
+@if (loading) {
+  <p>Loading events...</p>
+}
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+<!-- Calendar Grid View -->
+<div class="calendar-container">
+  <div class="calendar-grid">
+    <!-- Header Row with Days -->
+    <div class="time-column header"></div>
+    @for(day of weekDays; track day.getTime()) {
+      <div class="day-header" [class.today]="isToday(day)">
+        <div class="day-name">{{ day.toLocaleDateString('en-US', { weekday: 'short' }) }}</div>
+        <div class="day-date">{{ day.getDate() }}</div>
+      </div>
+    }
+
+    <!-- Time Slots -->
+    @for(hour of hours; track hour) {
+      <div class="time-label">{{ formatTime(hour) }}</div>
+      @for(day of weekDays; track day.getTime()) {
+        <div class="time-slot"
+             [class.today]="isToday(day)"
+             (click)="onTimeSlotClick(day, hour)">
+          @for(event of getEventsForTimeSlot(day, hour); track event.id) {
+            <div class="event-block"
+                 [style.background-color]="event.color || '#3f51b5'"
+                 (click)="openEditForm(event); $event.stopPropagation()">
+              <div class="event-title">{{ event.title }}</div>
+              @if(event.lessonId) {
+                <div class="event-lesson">📚 {{ getLessonTitle(event.lessonId) }}</div>
+              }
+            </div>
+          }
+          <div class="add-event-hint">+</div>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<!-- Form Modal -->
+@if (showForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingEvent ? 'Edit Event' : 'Create New Event' }}</h3>
+        <button class="btn-close" (click)="closeForm()">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveEvent()" class="event-form">
+        <div class="form-group">
+          <label for="lessonId">Link to Lesson (Optional)</label>
+          <select id="lessonId" [(ngModel)]="eventForm.lessonId" name="lessonId" (change)="onLessonSelected(eventForm.lessonId)">
+            <option [ngValue]="undefined">-- No Lesson --</option>
+            @for(lesson of lessons; track lesson.id) {
+              <option [ngValue]="lesson.id">{{ lesson.title }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <input type="text" id="title" [(ngModel)]="eventForm.title" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" [(ngModel)]="eventForm.description" name="description" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDateTime">Start Time *</label>
+            <input type="datetime-local" id="startDateTime" [value]="toDateTimeLocal(eventForm.startDateTime)" (input)="onStartDateTimeChange($event)" name="startDateTime" required>
+          </div>
+
+          <div class="form-group">
+            <label for="endDateTime">End Time *</label>
+            <input type="datetime-local" id="endDateTime" [value]="toDateTimeLocal(eventForm.endDateTime)" (input)="onEndDateTimeChange($event)" name="endDateTime" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="type">Event Type *</label>
+            <select id="type" [(ngModel)]="eventForm.type" name="type" required>
+              @for(type of eventTypes; track type.value) {
+                <option [ngValue]="type.value">{{ type.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="color">Color</label>
+            <input type="color" id="color" [(ngModel)]="eventForm.color" name="color">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          @if(editingEvent && eventForm.id) {
+            <button type="button" class="btn-danger" (click)="deleteEvent(eventForm.id)">Delete Event</button>
+          }
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary">{{ editingEvent ? 'Update' : 'Create' }} Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

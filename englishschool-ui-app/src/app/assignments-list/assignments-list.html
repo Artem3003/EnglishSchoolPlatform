@@ -1,0 +1,144 @@
+<div class="assignments-header">
+  <h2>{{ title }}</h2>
+  <button class="btn-primary" (click)="openCreateForm()">+ Add New Assignment</button>
+</div>
+
+@if (loading) {
+  <p>Loading assignments...</p>
+}
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+@if (!loading && !error && assignments.length === 0) {
+  <p class="empty-state">No assignments found. Click "Add New Assignment" to create one.</p>
+}
+
+<!-- Create Form Modal -->
+@if (showForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Create New Assignment</h3>
+        <button class="btn-close" (click)="closeForm()">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveAssignment()" class="assignment-form">
+        <div class="form-group">
+          <label for="homeworkId">Homework *</label>
+          <select id="homeworkId" [(ngModel)]="assignmentForm.homeworkId" name="homeworkId" required>
+            <option value="">-- Select Homework --</option>
+            @for(homework of homeworks; track homework.id) {
+              <option [ngValue]="homework.id">{{ homework.title }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Status *</label>
+          <select id="status" [(ngModel)]="assignmentForm.status" name="status" required>
+            @for(status of assignmentStatuses; track status.value) {
+              <option [ngValue]="status.value">{{ status.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary">Create Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Submit Form Modal -->
+@if (showSubmitForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Submit Assignment</h3>
+        <button class="btn-close" (click)="closeForm()">&times;</button>
+      </div>
+
+      <form (ngSubmit)="submitAssignment()" class="assignment-form">
+        <div class="form-group">
+          <label for="submissionText">Submission Text</label>
+          <textarea id="submissionText" [(ngModel)]="submitForm.submissionText" name="submissionText" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="attachmentUrl">Attachment URL</label>
+          <input type="url" id="attachmentUrl" [(ngModel)]="submitForm.attachmentUrl" name="attachmentUrl">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Grade Form Modal -->
+@if (showGradeForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Grade Assignment</h3>
+        <button class="btn-close" (click)="closeForm()">&times;</button>
+      </div>
+
+      <form (ngSubmit)="gradeAssignment()" class="assignment-form">
+        <div class="form-group">
+          <label for="grade">Grade (0-100) *</label>
+          <input type="number" id="grade" [(ngModel)]="gradeForm.grade" name="grade" min="0" max="100" required>
+        </div>
+
+        <div class="form-group">
+          <label for="teacherFeedback">Teacher Feedback</label>
+          <textarea id="teacherFeedback" [(ngModel)]="gradeForm.teacherFeedback" name="teacherFeedback" rows="4"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary">Submit Grade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+@if (!loading && !error && assignments.length > 0) {
+  <div class="assignments-grid">
+    @for(assignment of assignments; track assignment.id) {
+      <div class="assignment-card">
+        <div class="card-header">
+          <div>
+            <p><strong>Homework:</strong> {{ getHomeworkTitle(assignment.homeworkId) }}</p>
+            <p><strong>Status:</strong> <span class="status-badge status-{{ assignment.status }}">{{ getAssignmentStatusText(assignment.status) }}</span></p>
+          </div>
+          <div class="card-actions">
+            <button class="btn-icon" (click)="openSubmitForm(assignment)" title="Submit">📝</button>
+            <button class="btn-icon" (click)="openGradeForm(assignment)" title="Grade">📊</button>
+            <button class="btn-icon btn-delete" (click)="deleteAssignment(assignment.id!)" title="Delete">🗑️</button>
+          </div>
+        </div>
+        @if (assignment.submissionText) {
+          <p><strong>Submission:</strong> {{ assignment.submissionText }}</p>
+        }
+        @if (assignment.submittedAt) {
+          <p><strong>Submitted:</strong> {{ assignment.submittedAt | date:'short' }}</p>
+        }
+        @if (assignment.grade !== undefined && assignment.grade !== null) {
+          <p><strong>Grade:</strong> {{ assignment.grade }}</p>
+        }
+        @if (assignment.teacherFeedback) {
+          <p><strong>Feedback:</strong> {{ assignment.teacherFeedback }}</p>
+        }
+      </div>
+    }
+  </div>
+}

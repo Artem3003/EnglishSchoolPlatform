@@ -1,0 +1,75 @@
+<div class="homeworks-header">
+  <h2>{{ title }}</h2>
+  <button class="btn-primary" (click)="openCreateForm()">+ Add New Homework</button>
+</div>
+
+@if (loading) {
+  <p>Loading homeworks...</p>
+}
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+@if (!loading && !error && homeworks.length === 0) {
+  <p class="empty-state">No homeworks found. Click "Add New Homework" to create one.</p>
+}
+
+<!-- Form Modal -->
+@if (showForm) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ editingHomework ? 'Edit Homework' : 'Create New Homework' }}</h3>
+        <button class="btn-close" (click)="closeForm()">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveHomework()" class="homework-form">
+        <div class="form-group">
+          <label for="title">Title *</label>
+          <input type="text" id="title" [(ngModel)]="homeworkForm.title" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea id="description" [(ngModel)]="homeworkForm.description" name="description" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="instructions">Instructions *</label>
+          <textarea id="instructions" [(ngModel)]="homeworkForm.instructions" name="instructions" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="dueDate">Due Date *</label>
+          <input type="datetime-local" id="dueDate" [(ngModel)]="homeworkForm.dueDate" name="dueDate" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary">{{ editingHomework ? 'Update' : 'Create' }} Homework</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+@if (!loading && !error && homeworks.length > 0) {
+  <div class="homeworks-grid">
+    @for(homework of homeworks; track homework.id) {
+      <div class="homework-card">
+        <div class="card-header">
+          <h3>{{ homework.title }}</h3>
+          <div class="card-actions">
+            <button class="btn-icon btn-edit" (click)="openEditForm(homework)" title="Edit">✏️</button>
+            <button class="btn-icon btn-delete" (click)="deleteHomework(homework.id!)" title="Delete">🗑️</button>
+          </div>
+        </div>
+        <p>{{ homework.description }}</p>
+        <p class="instructions">{{ homework.instructions }}</p>
+        <p><strong>Due Date:</strong> {{ homework.dueDate | date:'short' }}</p>
+        <p><strong>Created:</strong> {{ homework.createdAt | date:'short' }}</p>
+      </div>
+    }
+  </div>
+}
