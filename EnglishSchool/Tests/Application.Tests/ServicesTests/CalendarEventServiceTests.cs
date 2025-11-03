@@ -1,4 +1,3 @@
-using Application.Constants;
 using Application.DTOs.CalendarEvent;
 using Application.Tests.Fixtures;
 using Domain.Entities;
@@ -17,10 +16,8 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         _fixture.ResetMocks();
         var createDto = CalendarEventServiceTestFixture.CreateSampleCreateCalendarEventDto();
         var calendarEvent = CalendarEventServiceTestFixture.CreateSampleCalendarEvent();
-        var eventDto = CalendarEventServiceTestFixture.CreateSampleCalendarEventDto();
 
         _fixture.MockMapper.Setup(m => m.Map<CalendarEvent>(createDto)).Returns(calendarEvent);
-        _fixture.MockMapper.Setup(m => m.Map<CalendarEventDto>(calendarEvent)).Returns(eventDto);
         _fixture.MockCalendarEventRepository.Setup(r => r.AddAsync(It.IsAny<CalendarEvent>())).Returns(Task.FromResult(calendarEvent));
         _fixture.MockUnitOfWork.Setup(u => u.SaveChangesAsync()).Returns(Task.FromResult(1));
 
@@ -31,7 +28,7 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         Assert.Equal(calendarEvent.Id, result);
         _fixture.MockCalendarEventRepository.Verify(r => r.AddAsync(calendarEvent), Times.Once);
         _fixture.MockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
-        _fixture.MockMemoryCache.Verify(c => c.CreateEntry(CacheKeys.CalendarEvents), Times.Once);
+        _fixture.MockMemoryCache.Verify(c => c.Remove("CalendarEvents_All"), Times.Once);
     }
 
     [Fact]
@@ -40,17 +37,19 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         // Arrange
         _fixture.ResetMocks();
         var eventId = Guid.NewGuid();
-        var cachedEvent = CalendarEventServiceTestFixture.CreateSampleCalendarEventDto();
-        object cachedValue = cachedEvent;
+        var calendarEvent = CalendarEventServiceTestFixture.CreateSampleCalendarEvent();
+        calendarEvent.Id = eventId;
+        var eventDto = CalendarEventServiceTestFixture.CreateSampleCalendarEventDto();
 
-        _fixture.MockMemoryCache.Setup(c => c.TryGetValue(CacheKeys.CalendarEvents, out cachedValue)).Returns(true);
+        _fixture.MockCalendarEventRepository.Setup(r => r.GetByIdAsync(eventId)).ReturnsAsync(calendarEvent);
+        _fixture.MockMapper.Setup(m => m.Map<CalendarEventDto>(calendarEvent)).Returns(eventDto);
 
         // Act
         var result = await _fixture.CalendarEventService.GetEventByIdAsync(eventId);
 
         // Assert
-        Assert.Equal(cachedEvent, result);
-        _fixture.MockCalendarEventRepository.Verify(r => r.GetByIdAsync(It.IsAny<Guid>()), Times.Never);
+        Assert.Equal(eventDto, result);
+        _fixture.MockCalendarEventRepository.Verify(r => r.GetByIdAsync(eventId), Times.Once);
     }
 
     [Fact]
@@ -62,9 +61,7 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         var calendarEvent = CalendarEventServiceTestFixture.CreateSampleCalendarEvent();
         calendarEvent.Id = eventId;
         var eventDto = CalendarEventServiceTestFixture.CreateSampleCalendarEventDto();
-        object cachedValue = null!;
 
-        _fixture.MockMemoryCache.Setup(c => c.TryGetValue(CacheKeys.CalendarEvents, out cachedValue)).Returns(false);
         _fixture.MockCalendarEventRepository.Setup(r => r.GetByIdAsync(eventId)).ReturnsAsync(calendarEvent);
         _fixture.MockMapper.Setup(m => m.Map<CalendarEventDto>(calendarEvent)).Returns(eventDto);
 
@@ -74,7 +71,6 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         // Assert
         Assert.Equal(eventDto, result);
         _fixture.MockCalendarEventRepository.Verify(r => r.GetByIdAsync(eventId), Times.Once);
-        _fixture.MockMemoryCache.Verify(c => c.CreateEntry(CacheKeys.CalendarEvents), Times.Once);
     }
 
     [Fact]
@@ -83,9 +79,7 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         // Arrange
         _fixture.ResetMocks();
         var eventId = Guid.NewGuid();
-        object cachedValue = null!;
 
-        _fixture.MockMemoryCache.Setup(c => c.TryGetValue(CacheKeys.CalendarEvents, out cachedValue)).Returns(false);
         _fixture.MockCalendarEventRepository.Setup(r => r.GetByIdAsync(eventId)).ReturnsAsync((CalendarEvent?)null);
 
         // Act & Assert
@@ -115,7 +109,7 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         _fixture.MockMapper.Verify(m => m.Map(updateDto, existingEvent), Times.Once);
         _fixture.MockCalendarEventRepository.Verify(r => r.Update(existingEvent), Times.Once);
         _fixture.MockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
-        _fixture.MockMemoryCache.Verify(c => c.Remove(CacheKeys.CalendarEvents), Times.Once);
+        _fixture.MockMemoryCache.Verify(c => c.Remove("CalendarEvents_All"), Times.Once);
     }
 
     [Fact]
@@ -153,7 +147,7 @@ public class CalendarEventServiceTests(CalendarEventServiceTestFixture fixture) 
         _fixture.MockCalendarEventRepository.Verify(r => r.GetByIdAsync(eventId), Times.Once);
         _fixture.MockCalendarEventRepository.Verify(r => r.Delete(existingEvent), Times.Once);
         _fixture.MockUnitOfWork.Verify(u => u.SaveChangesAsync(), Times.Once);
-        _fixture.MockMemoryCache.Verify(c => c.Remove(CacheKeys.CalendarEvents), Times.Once);
+        _fixture.MockMemoryCache.Verify(c => c.Remove("CalendarEvents_All"), Times.Once);
     }
 
     [Fact]
