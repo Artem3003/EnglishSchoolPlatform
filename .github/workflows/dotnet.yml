@@ -75,3 +75,33 @@ jobs:
         with:
           name: coverage-report
           path: ${{ env.COVERAGE_FILE }}
+
+  build-frontend:
+    name: Build Angular Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: englishschool-ui-app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: englishschool-ui-app
+        run: npm ci
+
+      - name: Build Angular app
+        working-directory: englishschool-ui-app
+        run: npm run build -- --configuration production
+
+      - name: Upload frontend build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build-artifacts
+          path: englishschool-ui-app/dist/
+
