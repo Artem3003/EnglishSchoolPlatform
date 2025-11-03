@@ -63,6 +63,16 @@
         </div>
 
         <div class="form-group">
+          <label for="courseId">Course (optional)</label>
+          <select id="courseId" [(ngModel)]="lessonForm.courseId" name="courseId">
+            <option [ngValue]="undefined">-- No Course --</option>
+            @for(course of courses; track course.id) {
+              <option [ngValue]="course.id">{{ course.title }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
           <label for="meetingLink">Meeting Link</label>
           <input type="url" id="meetingLink" [(ngModel)]="lessonForm.meetingLink" name="meetingLink">
         </div>
@@ -96,6 +106,9 @@
         <p><strong>Duration:</strong> {{ lesson.durationMinutes }} minutes</p>
         <p><strong>Type:</strong> {{ getLessonTypeText(lesson.type) }}</p>
         <p><strong>Status:</strong> {{ getLessonStatusText(lesson.status) }}</p>
+        @if (lesson.courseTitle) {
+          <p><strong>Course:</strong> {{ lesson.courseTitle }}</p>
+        }
         @if (lesson.meetingLink) {
           <p><strong>Meeting Link:</strong> <a [href]="lesson.meetingLink" target="_blank">Join</a></p>
         }

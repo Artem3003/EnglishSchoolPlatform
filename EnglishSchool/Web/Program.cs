@@ -26,6 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Repository and Unit of Work
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IHomeworkAssignmentRepository, HomeworkAssignmentRepository>();
 builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IStudentLessonRepository, StudentLessonRepository>();
 
 // Application Services
 builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IHomeworkAssignmentService, HomeworkAssignmentService>();
 builder.Services.AddScoped<IHomeworkService, HomeworkService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
@@ -84,6 +86,7 @@ builder.Services.AddSwaggerGen(c =>
             return [controller switch
             {
                 "Lessons" => "Lessons Management",
+                "Courses" => "Courses Management",
                 "Homeworks" => "Homework Management",
                 "Calendar" => "Calendar Events",
                 "Assignments" => "Homework Assignments",

@@ -10,8 +10,6 @@ public class UpdateLessonDto
 
     public string? Description { get; set; }
 
-    public DateTime? ScheduledDateTime { get; set; }
-
     public int? DurationMinutes { get; set; }
 
     public LessonType? Type { get; set; }
@@ -21,4 +19,6 @@ public class UpdateLessonDto
     public string? MeetingLink { get; set; }
 
     public string? Materials { get; set; }
+
+    public Guid? CourseId { get; set; }
 }

@@ -42,8 +42,8 @@
           </div>
 
           <div class="form-group">
-            <label for="durationMinutes">Duration (minutes) *</label>
-            <input type="number" id="durationMinutes" [(ngModel)]="courseForm.durationMinutes" name="durationMinutes" min="1" required>
+            <label for="numberOfLessons">Number of Lessons *</label>
+            <input type="number" id="numberOfLessons" [(ngModel)]="courseForm.numberOfLessons" name="numberOfLessons" min="1" required>
           </div>
         </div>
 
@@ -69,7 +69,7 @@
         </div>
         <p>{{ course.description }}</p>
         <p><strong>Price:</strong> ${{ course.price }}</p>
-        <p><strong>Duration:</strong> {{ course.durationMinutes }} minutes</p>
+        <p><strong>Number of Lessons:</strong> {{ course.numberOfLessons }}</p>
       </div>
     }
   </div>

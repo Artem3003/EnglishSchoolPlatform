@@ -9,6 +9,20 @@ public class LessonRepository(ApplicationDbContext context) : AbstractRepository
 {
     private readonly ApplicationDbContext _context = context;
 
+    public override async Task<Lesson?> GetByIdAsync(Guid id)
+    {
+        return await _context.Lessons
+            .Include(l => l.Course)
+            .FirstOrDefaultAsync(l => l.Id == id);
+    }
+
+    public override async Task<IEnumerable<Lesson>> GetAllAsync()
+    {
+        return await _context.Lessons
+            .Include(l => l.Course)
+            .ToListAsync();
+    }
+
     public async Task<int> CountLessonsAsync()
     {
         return await _context.Lessons.CountAsync();

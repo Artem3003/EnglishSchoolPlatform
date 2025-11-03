@@ -5,6 +5,8 @@ namespace Domain.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
+    public DbSet<Course> Courses { get; set; }
+
     public DbSet<Lesson> Lessons { get; set; }
 
     public DbSet<StudentLesson> StudentLessons { get; set; }
@@ -19,17 +21,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
+        // Course configuration
+        modelBuilder.Entity<Course>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.Price).IsRequired();
+            entity.Property(e => e.NumberOfLessons).IsRequired();
+        });
+
         // Lesson configuration
         modelBuilder.Entity<Lesson>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
             entity.Property(e => e.Description).IsRequired();
-            entity.Property(e => e.ScheduledDateTime).IsRequired();
             entity.Property(e => e.DurationMinutes).IsRequired();
             entity.Property(e => e.Type).IsRequired();
             entity.Property(e => e.Status).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
+            entity.HasOne(e => e.Course)
+                  .WithMany(c => c.Lessons)
+                  .HasForeignKey(e => e.CourseId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         // StudentLesson configuration
@@ -80,7 +95,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasOne(e => e.Lesson)
                   .WithMany(l => l.CalendarEvents)
                   .HasForeignKey(e => e.LessonId)
-                  .OnDelete(DeleteBehavior.SetNull);
+                  .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

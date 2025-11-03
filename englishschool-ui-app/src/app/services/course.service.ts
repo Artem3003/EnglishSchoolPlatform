@@ -15,6 +15,14 @@ export class CourseService {
     return this.http.get<Course[]>(`${this.baseUrl}/courses`);
   }
 
+  getAvailableCourses(excludeLessonId?: string): Observable<Course[]> {
+    let url = `${this.baseUrl}/courses/available`;
+    if (excludeLessonId) {
+      url += `?excludeLessonId=${excludeLessonId}`;
+    }
+    return this.http.get<Course[]>(url);
+  }
+
   getCourseById(id: string): Observable<Course> {
     return this.http.get<Course>(`${this.baseUrl}/courses/${id}`);
   }

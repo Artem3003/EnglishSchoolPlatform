@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Lessons } from '../models/lessons.model';
 import { LessonService } from '../services/lesson.service';
+import { CourseService } from '../services/course.service';
+import { Course } from '../models/course.model';
 import { LessonType } from '../models/enums/lesson-type.enum';
 import { LessonStatus } from '../models/enums/lesson-status.enum';
 
@@ -15,6 +17,7 @@ import { LessonStatus } from '../models/enums/lesson-status.enum';
 export class LessonsList implements OnInit {
   title: string = 'Lessons';
   lessons: Lessons[] = [];
+  courses: Course[] = [];
   loading: boolean = false;
   error: string = '';
   showForm: boolean = false;
@@ -32,10 +35,25 @@ export class LessonsList implements OnInit {
     .filter(key => !isNaN(Number(key)))
     .map(key => ({ value: Number(key), name: LessonStatus[Number(key)] }));
 
-  constructor(private lessonService: LessonService) { }
+  constructor(
+    private lessonService: LessonService,
+    private courseService: CourseService
+  ) { }
 
   ngOnInit(): void {
     this.loadLessons();
+    this.loadCourses();
+  }
+
+  loadCourses(): void {
+    this.courseService.getAvailableCourses().subscribe({
+      next: (data: Course[]) => {
+        this.courses = data;
+      },
+      error: (err) => {
+        console.error('Error fetching available courses', err);
+      }
+    });
   }
 
   loadLessons(): void {
@@ -71,16 +89,28 @@ export class LessonsList implements OnInit {
   openCreateForm(): void {
     this.editingLesson = null;
     this.lessonForm = this.getEmptyLesson();
+    this.loadCourses(); // Reload available courses for creating
     this.showForm = true;
   }
 
   openEditForm(lesson: Lessons): void {
     this.editingLesson = lesson;
     this.lessonForm = { ...lesson };
+    this.loadCoursesForEdit(lesson.id); // Load courses excluding current lesson
     this.showForm = true;
   }
 
-  closeForm(): void {
+  loadCoursesForEdit(lessonId: string): void {
+    // When editing, exclude the current lesson from the capacity check
+    this.courseService.getAvailableCourses(lessonId).subscribe({
+      next: (data: Course[]) => {
+        this.courses = data;
+      },
+      error: (err) => {
+        console.error('Error fetching available courses for edit', err);
+      }
+    });
+  }  closeForm(): void {
     this.showForm = false;
     this.editingLesson = null;
     this.lessonForm = this.getEmptyLesson();

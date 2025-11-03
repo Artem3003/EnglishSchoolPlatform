@@ -49,7 +49,7 @@ export class CoursesList implements OnInit {
       title: '',
       description: '',
       price: 0,
-      durationMinutes: 60
+      numberOfLessons: 1
     };
   }
 

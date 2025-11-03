@@ -5,11 +5,11 @@ namespace Domain.Entities;
 
 public class Lesson : BaseEntity<Guid>
 {
+    public Guid? CourseId { get; set; }
+
     public string Title { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
-
-    public DateTime ScheduledDateTime { get; set; }
 
     public int DurationMinutes { get; set; }
 
@@ -22,6 +22,8 @@ public class Lesson : BaseEntity<Guid>
     public string? Materials { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public Course? Course { get; set; }
 
     public List<StudentLesson> StudentLessons { get; set; } = [];
 

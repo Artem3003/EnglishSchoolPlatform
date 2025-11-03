@@ -30,7 +30,7 @@ The system should support the following features:
 - **Title**: String, required
 - **Description**: String, optional
 - **Price**: Double, required
-- **DurationMinutes**: int, required
+- **NumberOfLessons**: int
 
 ### Lesson
 - **Id**: Guid, required, unique
@@ -67,7 +67,6 @@ The system should support the following features:
     "teacherId": "abc123",
     "price": 100,
     "durationMinutes": 60,
-    "startDate": "2025-10-01T09:00:00"
 }
 ```
 
@@ -86,7 +85,6 @@ Response Example:
   "teacherId": "abc123",
   "price": 100,
   "durationMinutes": 60,
-  "startDate": "2025-10-01T09:00:00"
 }
 ```
 
@@ -104,6 +102,7 @@ Title must be unique.
 
 Request Example:
 
+```{xml}
 {
   "course": {
     "id": "77c06fc6-f8a1-46f9-af03-2793e500112c",
@@ -115,6 +114,7 @@ Request Example:
     "startDate": "2025-10-02T09:00:00"
   }
 }
+```
 
 ### E04 US5 - Delete Course
 

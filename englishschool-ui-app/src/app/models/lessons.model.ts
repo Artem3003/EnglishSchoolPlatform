@@ -10,5 +10,7 @@ export interface Lessons {
   status: LessonStatus;
   meetingLink?: string;
   materialsLink?: string;
+  courseId?: string;
+  courseTitle?: string;
   createdAt: Date;
 }
