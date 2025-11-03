@@ -12,6 +12,7 @@ namespace Application.Services;
 
 public class CalendarEventService(IUnitOfWork unitOfWork, ICalendarEventRepository eventRepository, IMapper mapper, IOptions<CacheSettings> cacheSettings, IMemoryCache memoryCache, ILogger<CalendarEventService> logger) : ICalendarEventService
 {
+    private const string AllEventsCacheKey = "CalendarEvents_All";
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICalendarEventRepository _eventRepository = eventRepository;
     private readonly IMapper _mapper = mapper;
@@ -35,24 +36,42 @@ public class CalendarEventService(IUnitOfWork unitOfWork, ICalendarEventReposito
         await _eventRepository.AddAsync(calendarEvent);
         await _unitOfWork.SaveChangesAsync();
 
-        var eventDto = _mapper.Map<CalendarEventDto>(calendarEvent);
-        _memoryCache.Set(CacheKeys.CalendarEvents, eventDto, TimeSpan.FromMinutes(_cacheExpirationMinutes));
-        _logger.LogDebug($"Calendar event cached for title: {dto.Title}");
+        // Clear cache immediately after create
+        _memoryCache.Remove(AllEventsCacheKey);
+        _logger.LogDebug($"Cleared calendar events cache after creation");
 
         _logger.LogInformation($"Successfully created calendar event with ID: {calendarEvent.Id}, Title: {calendarEvent.Title}");
 
         return calendarEvent.Id;
     }
 
+    public async Task<IEnumerable<CalendarEventDto>> GetAllEventsAsync()
+    {
+        _logger.LogInformation("Retrieving all calendar events");
+
+        // Try to get from cache
+        if (_memoryCache.TryGetValue(AllEventsCacheKey, out IEnumerable<CalendarEventDto>? cachedEvents) && cachedEvents is not null)
+        {
+            _logger.LogDebug("Retrieved all calendar events from cache");
+            return cachedEvents;
+        }
+
+        // Get from database
+        var events = await _eventRepository.GetAllAsync();
+        var eventDtos = _mapper.Map<IEnumerable<CalendarEventDto>>(events);
+
+        // Store in cache
+        _memoryCache.Set(AllEventsCacheKey, eventDtos, TimeSpan.FromMinutes(_cacheExpirationMinutes));
+        _logger.LogDebug("Cached all calendar events");
+
+        _logger.LogInformation($"Successfully retrieved {eventDtos.Count()} calendar events");
+
+        return eventDtos;
+    }
+
     public async Task<CalendarEventDto> GetEventByIdAsync(Guid id)
     {
         _logger.LogInformation($"Retrieving calendar event by ID: {id}");
-
-        if (_memoryCache.TryGetValue(CacheKeys.CalendarEvents, out CalendarEventDto? cachedEvent))
-        {
-            _logger.LogInformation($"Calendar event found in cache for ID: {id}");
-            return cachedEvent!;
-        }
 
         var calendarEvent = await _eventRepository.GetByIdAsync(id);
         if (calendarEvent is null)
@@ -64,8 +83,6 @@ public class CalendarEventService(IUnitOfWork unitOfWork, ICalendarEventReposito
         _logger.LogDebug($"Calendar event retrieved from repository for ID: {id}");
 
         var eventDto = _mapper.Map<CalendarEventDto>(calendarEvent);
-        _memoryCache.Set(CacheKeys.CalendarEvents, eventDto, TimeSpan.FromMinutes(_cacheExpirationMinutes));
-        _logger.LogDebug($"Calendar event cached for ID: {id}");
 
         _logger.LogInformation($"Successfully retrieved calendar event: {id}");
 
@@ -89,8 +106,9 @@ public class CalendarEventService(IUnitOfWork unitOfWork, ICalendarEventReposito
         _eventRepository.Update(calendarEvent);
         await _unitOfWork.SaveChangesAsync();
 
-        _memoryCache.Remove(CacheKeys.CalendarEvents);
-        _logger.LogDebug($"Cleared calendar events cache after updating event");
+        // Clear cache immediately after update
+        _memoryCache.Remove(AllEventsCacheKey);
+        _logger.LogDebug($"Cleared calendar events cache after update");
 
         _logger.LogInformation($"Successfully updated calendar event: {calendarEvent.Id}, Title: {calendarEvent.Title}");
     }
@@ -109,8 +127,9 @@ public class CalendarEventService(IUnitOfWork unitOfWork, ICalendarEventReposito
         _eventRepository.Delete(calendarEvent);
         await _unitOfWork.SaveChangesAsync();
 
-        _memoryCache.Remove(CacheKeys.CalendarEvents);
-        _logger.LogDebug($"Cleared calendar events cache after deleting event");
+        // Clear cache immediately after delete
+        _memoryCache.Remove(AllEventsCacheKey);
+        _logger.LogDebug($"Cleared calendar events cache after deletion");
 
         _logger.LogInformation($"Successfully deleted calendar event: {calendarEvent.Id}");
     }

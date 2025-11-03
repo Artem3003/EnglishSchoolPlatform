@@ -151,7 +151,8 @@ public class LessonService(IUnitOfWork unitOfWork, ILessonRepository lessonRepos
 
         _memoryCache.Remove(CacheKeys.Lessons);
         _memoryCache.Remove(CacheKeys.TotalLessonsCount);
-        _logger.LogDebug($"Cleared lessons cache after deleting lesson");
+        _memoryCache.Remove("CalendarEvents_All");
+        _logger.LogDebug($"Cleared lessons and calendar events cache after deleting lesson");
 
         _logger.LogInformation($"Successfully deleted lesson: {lesson.Id}");
     }

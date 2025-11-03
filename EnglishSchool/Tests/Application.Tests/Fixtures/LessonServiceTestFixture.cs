@@ -74,7 +74,6 @@ public class LessonServiceTestFixture
             Id = Guid.NewGuid(),
             Title = "Test Lesson",
             Description = "Test Description",
-            ScheduledDateTime = DateTime.UtcNow.AddDays(1),
             DurationMinutes = 60,
             Type = Domain.Entities.Enums.LessonType.Individual,
             Status = Domain.Entities.Enums.LessonStatus.Scheduled,
@@ -91,7 +90,6 @@ public class LessonServiceTestFixture
         {
             Title = "New Test Lesson",
             Description = "New Test Description",
-            ScheduledDateTime = DateTime.UtcNow.AddDays(2),
             DurationMinutes = 90,
             Type = Domain.Entities.Enums.LessonType.Group,
         };
@@ -107,7 +105,6 @@ public class LessonServiceTestFixture
             Id = Guid.NewGuid(),
             Title = "Test Lesson DTO",
             Description = "Test Description DTO",
-            ScheduledDateTime = DateTime.UtcNow.AddDays(1),
             DurationMinutes = 60,
             Type = Domain.Entities.Enums.LessonType.Individual,
             Status = Domain.Entities.Enums.LessonStatus.Scheduled,
@@ -125,7 +122,6 @@ public class LessonServiceTestFixture
             Id = id,
             Title = "Updated Lesson Title",
             Description = "Updated Description",
-            ScheduledDateTime = DateTime.UtcNow.AddDays(3),
             DurationMinutes = 120,
         };
     }

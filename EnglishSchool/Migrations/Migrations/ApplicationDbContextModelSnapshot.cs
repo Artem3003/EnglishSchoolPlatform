@@ -58,6 +58,32 @@ namespace Migrations.Migrations
                     b.ToTable("CalendarEvents");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Course", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("NumberOfLessons")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
             modelBuilder.Entity("Domain.Entities.Homework", b =>
                 {
                     b.Property<Guid>("Id")
@@ -136,6 +162,9 @@ namespace Migrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -152,9 +181,6 @@ namespace Migrations.Migrations
                     b.Property<string>("MeetingLink")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ScheduledDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -167,6 +193,8 @@ namespace Migrations.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Lessons");
                 });
@@ -227,6 +255,16 @@ namespace Migrations.Migrations
                     b.Navigation("Homework");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Lesson", b =>
+                {
+                    b.HasOne("Domain.Entities.Course", "Course")
+                        .WithMany("Lessons")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("Domain.Entities.StudentLesson", b =>
                 {
                     b.HasOne("Domain.Entities.Lesson", "Lesson")
@@ -236,6 +274,11 @@ namespace Migrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Course", b =>
+                {
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("Domain.Entities.Homework", b =>

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Migrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250912112034_Initial")]
+    [Migration("20251027145157_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -154,9 +154,6 @@ namespace Migrations.Migrations
 
                     b.Property<string>("MeetingLink")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ScheduledDateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

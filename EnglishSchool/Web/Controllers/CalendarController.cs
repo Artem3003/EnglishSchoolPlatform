@@ -11,6 +11,13 @@ public class CalendarController(ICalendarEventService calendarEventService) : Co
 {
     private readonly ICalendarEventService _calendarEventService = calendarEventService;
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CalendarEventDto>>> GetAllEvents()
+    {
+        var events = await _calendarEventService.GetAllEventsAsync();
+        return Ok(events);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateEvent([FromBody] CreateCalendarEventDto request)
     {

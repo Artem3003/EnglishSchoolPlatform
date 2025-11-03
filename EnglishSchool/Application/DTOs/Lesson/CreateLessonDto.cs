@@ -8,8 +8,6 @@ public class CreateLessonDto
 
     public string Description { get; set; } = string.Empty;
 
-    public DateTime ScheduledDateTime { get; set; }
-
     public int DurationMinutes { get; set; }
 
     public LessonType Type { get; set; }
@@ -19,4 +17,6 @@ public class CreateLessonDto
     public string? MeetingLink { get; set; }
 
     public string? Materials { get; set; }
+
+    public Guid? CourseId { get; set; }
 }

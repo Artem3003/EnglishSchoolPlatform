@@ -22,13 +22,13 @@ public abstract class AbstractRepository<TEntity>(ApplicationDbContext context) 
         _context.Remove(entity);
     }
 
-    public async Task<TEntity?> GetByIdAsync(Guid id)
+    public virtual async Task<TEntity?> GetByIdAsync(Guid id)
     {
         var entity = await _context.FindAsync<TEntity>(id);
         return entity;
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
         return await _context.Set<TEntity>().ToListAsync();
     }

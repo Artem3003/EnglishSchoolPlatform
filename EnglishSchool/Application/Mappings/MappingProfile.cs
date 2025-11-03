@@ -1,4 +1,5 @@
 using Application.DTOs.CalendarEvent;
+using Application.DTOs.Course;
 using Application.DTOs.Homework;
 using Application.DTOs.HomeworkAssignment;
 using Application.DTOs.Lesson;
@@ -11,8 +12,15 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        // Course
+        CreateMap<Course, CourseDto>();
+        CreateMap<CreateCourseDto, Course>();
+        CreateMap<UpdateCourseDto, Course>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
         // Lesson
-        CreateMap<Lesson, LessonDto>();
+        CreateMap<Lesson, LessonDto>()
+            .ForMember(dest => dest.CourseTitle, opt => opt.MapFrom(src => src.Course != null ? src.Course.Title : null));
         CreateMap<CreateLessonDto, Lesson>()
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
         CreateMap<UpdateLessonDto, Lesson>()
