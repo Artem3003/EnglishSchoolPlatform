@@ -40,11 +40,11 @@ The application is divided into multiple epics. Each epic corresponds to a featu
 | 3.   | Logging and Swagger | Add structured logging and API documentation with Swagger. | [game-store-epic-03](epic-03.md) |
 | 4.   | Enhancements and UI Integration | Improve UI elements and overall user experience. | [game-store-epic-04](epic-04.md) |
 | 5.   | Payment Methods | Extend functionality by adding payment gateway support. | [game-store-epic-05](epic-05.md) |
-| 6.   | Comments and Moderation | Add user comments and content moderation features. | [game-store-epic-06](epic-06.md) |
+| 6.   | Authorization | Implement role-based access control for different user types. | [game-store-epic-06](epic-06.md) |
 | 7.   | Filters | Implement game filtering and pagination features. | [game-store-epic-07](epic-07.md) |
 | 8.   | NoSQL Database | Integrate a NoSQL database alongside the existing relational database. | [game-store-epic-08](epic-08.md) |
-| 9.   | Authorization | Implement role-based access control for different user types. | [game-store-epic-09](epic-09.md) |
-| 10.  | Game Picture [Microsoft Azure] | Enable game image uploads and display them on game details pages. | [game-store-epic-10](epic-10.md) |
+| 9.   | Comments and Moderation | Add user comments and content moderation features. | [game-store-epic-09](epic-09.md) |
+| 10.  | Course Picture [Microsoft Azure] | Enable course image uploads and display them on game details pages. | [game-store-epic-10](epic-10.md) |
 | 11.  | Big Data [Microsoft Azure] | Optimize the system for handling large-scale game data. | [game-store-epic-11](epic-11.md) |
 | 12.  | Notifications [Microsoft Azure] | Implement user notifications for important events. | [game-store-epic-12](epic-12.md) |
 | 13.  | UI Design [Angular] | Apply UI designs based on given mock-ups. | [game-store-epic-13](epic-13.md) |
