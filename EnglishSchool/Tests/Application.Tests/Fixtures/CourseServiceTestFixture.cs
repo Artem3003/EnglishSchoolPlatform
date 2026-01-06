@@ -1,9 +1,12 @@
+using Application.Constants;
 using Application.DTOs.Course;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Application.Tests.Fixtures;
@@ -12,10 +15,19 @@ public class CourseServiceTestFixture
 {
     public CourseServiceTestFixture()
     {
+        var cacheSettings = new CacheSettings { DefaultExpirationMinutes = 1 };
+        MockCacheSettings.Setup(x => x.Value).Returns(cacheSettings);
+
+        var mockCacheEntry = new Mock<ICacheEntry>();
+        mockCacheEntry.SetupAllProperties();
+        MockMemoryCache.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(mockCacheEntry.Object);
+
         CourseService = new CourseService(
             MockUnitOfWork.Object,
             MockCourseRepository.Object,
             MockMapper.Object,
+            MockCacheSettings.Object,
+            MockMemoryCache.Object,
             MockLogger.Object);
     }
 
@@ -27,6 +39,10 @@ public class CourseServiceTestFixture
 
     public Mock<ILogger<CourseService>> MockLogger { get; } = new();
 
+    public Mock<IOptions<CacheSettings>> MockCacheSettings { get; } = new();
+
+    public Mock<IMemoryCache> MockMemoryCache { get; } = new();
+
     public CourseService CourseService { get; }
 
     public void ResetMocks()
@@ -34,6 +50,15 @@ public class CourseServiceTestFixture
         MockUnitOfWork.Reset();
         MockCourseRepository.Reset();
         MockMapper.Reset();
+        MockCacheSettings.Reset();
+        MockMemoryCache.Reset();
+
+        var cacheSettings = new CacheSettings { DefaultExpirationMinutes = 1 };
+        MockCacheSettings.Setup(x => x.Value).Returns(cacheSettings);
+
+        var mockCacheEntry = new Mock<ICacheEntry>();
+        mockCacheEntry.SetupAllProperties();
+        MockMemoryCache.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns(mockCacheEntry.Object);
     }
 
     public static Course CreateSampleCourse()
