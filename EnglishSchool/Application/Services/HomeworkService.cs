@@ -51,7 +51,7 @@ public class HomeworkService(IUnitOfWork unitOfWork, IHomeworkRepository homewor
         if (_memoryCache.TryGetValue(CacheKeys.Homework, out HomeworkDto? cachedHomework))
         {
             _logger.LogInformation($"Homework found in cache for ID: {id}");
-            return cachedHomework!;
+            return cachedHomework;
         }
 
         var homework = await _homeworkRepository.GetByIdAsync(id);
