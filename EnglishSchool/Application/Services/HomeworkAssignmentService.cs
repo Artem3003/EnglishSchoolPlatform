@@ -52,7 +52,7 @@ public class HomeworkAssignmentService(IUnitOfWork unitOfWork, IHomeworkAssignme
         if (_memoryCache.TryGetValue(CacheKeys.HomeworkAssignments, out HomeworkAssignmentDto? cachedAssignment))
         {
             _logger.LogInformation($"Homework assignment found in cache for ID: {id}");
-            return cachedAssignment!;
+            return cachedAssignment;
         }
 
         var assignment = await _assignmentRepository.GetByIdAsync(id);
