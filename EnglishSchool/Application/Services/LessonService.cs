@@ -52,7 +52,7 @@ public class LessonService(IUnitOfWork unitOfWork, ILessonRepository lessonRepos
         if (_memoryCache.TryGetValue(CacheKeys.Lessons, out LessonDto? cachedLesson))
         {
             _logger.LogInformation($"Lesson found in cache for ID: {id}");
-            return cachedLesson!;
+            return cachedLesson;
         }
 
         var lesson = await _lessonRepository.GetByIdAsync(id);
