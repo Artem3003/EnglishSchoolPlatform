@@ -4,6 +4,8 @@ import { LessonsList } from './lessons-list/lessons-list';
 import { HomeworksList } from './homeworks-list/homeworks-list';
 import { AssignmentsList } from './assignments-list/assignments-list';
 import { CalendarList } from './calendar-list/calendar-list';
+import { Cart } from './cart/cart';
+import { Orders } from './orders/orders';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
@@ -11,6 +13,8 @@ export const routes: Routes = [
   { path: 'lessons', component: LessonsList },
   { path: 'homeworks', component: HomeworksList },
   { path: 'assignments', component: AssignmentsList },
-  { path: 'calendar', component: CalendarList }
+  { path: 'calendar', component: CalendarList },
+  { path: 'cart', component: Cart },
+  { path: 'orders', component: Orders }
 ];
 

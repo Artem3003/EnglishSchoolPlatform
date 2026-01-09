@@ -9,9 +9,13 @@
       <a routerLink="/homeworks" routerLinkActive="active">Homeworks</a>
       <a routerLink="/assignments" routerLinkActive="active">Assignments</a>
       <a routerLink="/calendar" routerLinkActive="active">Calendar</a>
+      <a routerLink="/orders" routerLinkActive="active">Orders</a>
     </nav>
   </div>
   <main class="content">
+    <div class="header-bar">
+      <app-cart-icon></app-cart-icon>
+    </div>
     <router-outlet></router-outlet>
   </main>
 </div>
