@@ -3,6 +3,7 @@ using Application.DTOs.Course;
 using Application.DTOs.Homework;
 using Application.DTOs.HomeworkAssignment;
 using Application.DTOs.Lesson;
+using Application.DTOs.Order;
 using AutoMapper;
 using Domain.Entities;
 
@@ -51,5 +52,15 @@ public class MappingProfile : Profile
         CreateMap<CreateCalendarEventDto, CalendarEvent>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => Enum.Parse<Domain.Entities.Enums.EventType>(src.Type.ToString())));
         CreateMap<UpdateCalendarEventDto, CalendarEvent>();
+
+        // Order
+        CreateMap<Order, OrderDto>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+        // OrderCourse -> CartItemDto
+        CreateMap<OrderCourse, CartItemDto>();
+
+        // OrderCourse -> OrderDetailDto
+        CreateMap<OrderCourse, OrderDetailDto>();
     }
 }
