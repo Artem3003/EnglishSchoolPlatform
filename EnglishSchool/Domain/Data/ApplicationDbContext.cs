@@ -17,6 +17,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<CalendarEvent> CalendarEvents { get; set; }
 
+    public DbSet<Order> Orders { get; set; }
+
+    public DbSet<OrderCourse> OrderCourses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -95,6 +99,35 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasOne(e => e.Lesson)
                   .WithMany(l => l.CalendarEvents)
                   .HasForeignKey(e => e.LessonId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Order configuration
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.CustomerId).IsRequired();
+            entity.Property(e => e.Status).IsRequired()
+                  .HasConversion<string>();
+        });
+
+        // OrderCourse configuration
+        modelBuilder.Entity<OrderCourse>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.OrderId).IsRequired();
+            entity.Property(e => e.CourseId).IsRequired();
+            entity.Property(e => e.Price).IsRequired();
+            entity.Property(e => e.Quantity).IsRequired();
+            entity.Property(e => e.Discount);
+            entity.HasIndex(e => new { e.OrderId, e.CourseId }).IsUnique();
+            entity.HasOne(e => e.Order)
+                  .WithMany(o => o.OrderCourses)
+                  .HasForeignKey(e => e.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Course)
+                  .WithMany()
+                  .HasForeignKey(e => e.CourseId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
     }

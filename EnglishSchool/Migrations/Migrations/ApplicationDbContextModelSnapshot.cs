@@ -199,6 +199,58 @@ namespace Migrations.Migrations
                     b.ToTable("Lessons");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Domain.Entities.OrderCourse", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("OrderId", "CourseId")
+                        .IsUnique();
+
+                    b.ToTable("OrderCourses");
+                });
+
             modelBuilder.Entity("Domain.Entities.StudentLesson", b =>
                 {
                     b.Property<Guid>("Id")
@@ -229,7 +281,7 @@ namespace Migrations.Migrations
                     b.HasOne("Domain.Entities.Lesson", "Lesson")
                         .WithMany("CalendarEvents")
                         .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Lesson");
                 });
@@ -265,6 +317,25 @@ namespace Migrations.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("Domain.Entities.OrderCourse", b =>
+                {
+                    b.HasOne("Domain.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Order", "Order")
+                        .WithMany("OrderCourses")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Domain.Entities.StudentLesson", b =>
                 {
                     b.HasOne("Domain.Entities.Lesson", "Lesson")
@@ -293,6 +364,11 @@ namespace Migrations.Migrations
                     b.Navigation("Homeworks");
 
                     b.Navigation("StudentLessons");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Order", b =>
+                {
+                    b.Navigation("OrderCourses");
                 });
 #pragma warning restore 612, 618
         }

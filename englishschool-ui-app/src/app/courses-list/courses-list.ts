@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Course } from '../models/course.model';
 import { CourseService } from '../services/course.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-courses-list',
@@ -15,13 +16,17 @@ export class CoursesList implements OnInit {
   courses: Course[] = [];
   loading: boolean = false;
   error: string = '';
+  success: string = '';
   showForm: boolean = false;
   editingCourse: Course | null = null;
 
   // Form model
   courseForm: Course = this.getEmptyCourse();
 
-  constructor(private courseService: CourseService) { }
+  constructor(
+    private courseService: CourseService,
+    private cartService: CartService
+  ) { }
 
   ngOnInit(): void {
     this.loadCourses();
@@ -111,6 +116,20 @@ export class CoursesList implements OnInit {
         }
       });
     }
+  }
+
+  addToCart(courseId: string): void {
+    this.cartService.addToCart(courseId).subscribe({
+      next: () => {
+        this.success = 'Course added to cart!';
+        setTimeout(() => this.success = '', 3000);
+      },
+      error: (err) => {
+        console.error('Error adding to cart', err);
+        this.error = 'Failed to add course to cart';
+        setTimeout(() => this.error = '', 3000);
+      }
+    });
   }
 }
 

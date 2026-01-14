@@ -7,12 +7,12 @@
   <p>Loading lessons...</p>
 }
 
-@if (error) {
-  <p class="error">{{ error }}</p>
-}
-
 @if (!loading && !error && lessons.length === 0) {
   <p class="empty-state">No lessons found. Click "Add New Lesson" to create one.</p>
+}
+
+@if (error) {
+  <p class="error">{{ error }}</p>
 }
 
 <!-- Form Modal -->

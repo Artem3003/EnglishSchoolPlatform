@@ -1,0 +1,101 @@
+<div class="orders-container">
+  <div class="orders-header">
+    <h2>📦 My Orders</h2>
+    <button class="btn-secondary" (click)="goToCart()">Go to Cart</button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-spinner">
+      <p>Loading orders...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-message">{{ error }}</div>
+  }
+
+  @if (!loading && orders.length === 0) {
+    <div class="empty-orders">
+      <div class="empty-icon">📦</div>
+      <h3>No orders yet</h3>
+      <p>Your completed orders will appear here</p>
+      <button class="btn-primary" (click)="goToCart()">Go to Cart</button>
+    </div>
+  }
+
+  @if (!loading && orders.length > 0) {
+    <div class="orders-list">
+      @for (order of orders; track order.id) {
+        <div class="order-card" (click)="viewOrderDetails(order)">
+          <div class="order-info">
+            <div class="order-id">
+              <span class="label">Order ID:</span>
+              <span class="value">{{ order.id | slice:0:8 }}...</span>
+            </div>
+            <div class="order-date">
+              <span class="label">Date:</span>
+              <span class="value">{{ formatDate(order.date) }}</span>
+            </div>
+          </div>
+          <div class="order-action">
+            <span class="view-details">View Details →</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Order Details Modal -->
+  @if (selectedOrder) {
+    <div class="modal-overlay" (click)="closeDetails()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Order Details</h3>
+          <button class="btn-close" (click)="closeDetails()">&times;</button>
+        </div>
+
+        <div class="order-summary">
+          <div class="summary-item">
+            <span class="label">Order ID:</span>
+            <span class="value">{{ selectedOrder.id }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Date:</span>
+            <span class="value">{{ formatDate(selectedOrder.date) }}</span>
+          </div>
+        </div>
+
+        @if (loadingDetails) {
+          <div class="loading-spinner">
+            <p>Loading details...</p>
+          </div>
+        }
+
+        @if (!loadingDetails && orderDetails.length > 0) {
+          <div class="order-items">
+            <h4>Items</h4>
+            @for (item of orderDetails; track item.courseId) {
+              <div class="order-item">
+                <div class="item-info">
+                  <span class="item-name">{{ getCourseName(item.courseId) }}</span>
+                  <span class="item-meta">
+                    ${{ item.price }} × {{ item.quantity }}
+                    @if (item.discount > 0) {
+                      <span class="discount">-{{ item.discount }}%</span>
+                    }
+                  </span>
+                </div>
+                <span class="item-total">${{ getItemTotal(item) | number:'1.2-2' }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="order-total">
+            <span>Total</span>
+            <span class="total-amount">${{ getOrderTotal() | number:'1.2-2' }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

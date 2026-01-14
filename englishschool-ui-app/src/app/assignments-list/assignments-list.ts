@@ -47,10 +47,17 @@ export class AssignmentsList implements OnInit {
   loadHomeworks(): void {
     this.homeworkService.getHomeworks().subscribe({
       next: (data: Homework[]) => {
-        this.homeworks = data;
+        this.homeworks = data || [];
       },
       error: (err) => {
-        console.error('Error fetching homeworks', err);
+        console.error('Error fetching Assignments', err);
+        // If it's a 404 or the response is empty, treat it as no assigns found
+        if (err.status === 404 || err.status === 204) {
+          this.assignments = [];
+        } else {
+          this.error = 'Failed to load assignments';
+        }
+        this.loading = false;
       }
     });
   }
@@ -60,12 +67,17 @@ export class AssignmentsList implements OnInit {
     this.error = '';
     this.assignmentService.getHomeworkAssignments().subscribe({
       next: (data: HomeworkAssignment[]) => {
-        this.assignments = data;
+        this.assignments = data || [];
         this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching assignments', err);
-        this.error = 'Failed to load assignments';
+        // If it's a 404 or the response is empty, treat it as no assignments found
+        if (err.status === 404 || err.status === 204) {
+          this.assignments = [];
+        } else {
+          this.error = 'Failed to load assignments';
+        }
         this.loading = false;
       }
     });

@@ -61,12 +61,17 @@ export class LessonsList implements OnInit {
     this.error = '';
     this.lessonService.getLessons().subscribe({
       next: (data: Lessons[]) => {
-        this.lessons = data;
+        this.lessons = data || [];
         this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching lessons', err);
-        this.error = 'Failed to load lessons';
+        // If it's a 404 or the response is empty, treat it as no lessons found
+        if (err.status === 404 || err.status === 204) {
+          this.lessons = [];
+        } else {
+          this.error = 'Failed to load lessons';
+        }
         this.loading = false;
       }
     });

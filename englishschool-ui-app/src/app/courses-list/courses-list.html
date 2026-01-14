@@ -11,6 +11,10 @@
   <p class="error">{{ error }}</p>
 }
 
+@if (success) {
+  <p class="success">{{ success }}</p>
+}
+
 @if (!loading && !error && courses.length === 0) {
   <p class="empty-state">No courses found. Click "Add New Course" to create one.</p>
 }
@@ -70,6 +74,9 @@
         <p>{{ course.description }}</p>
         <p><strong>Price:</strong> ${{ course.price }}</p>
         <p><strong>Number of Lessons:</strong> {{ course.numberOfLessons }}</p>
+        <button class="btn-add-cart" (click)="addToCart(course.id)">
+          🛒 Add to Cart
+        </button>
       </div>
     }
   </div>
