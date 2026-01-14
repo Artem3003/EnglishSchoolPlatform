@@ -74,7 +74,7 @@ export class CoursesList implements OnInit {
   saveCourse(): void {
     if (this.editingCourse) {
       // Update existing course
-      this.courseService.updateCourse(this.courseForm.id, this.courseForm).subscribe({
+      this.courseService.updateCourse(this.courseForm).subscribe({
         next: () => {
           this.loadCourses();
           this.closeForm();

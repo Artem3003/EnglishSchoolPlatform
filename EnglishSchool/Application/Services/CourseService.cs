@@ -1,9 +1,12 @@
+using Application.Constants;
 using Application.DTOs.Course;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Application.Services;
 
@@ -11,12 +14,16 @@ public class CourseService(
     IUnitOfWork unitOfWork,
     ICourseRepository courseRepository,
     IMapper mapper,
+    IOptions<CacheSettings> cacheSettings,
+    IMemoryCache memoryCache,
     ILogger<CourseService> logger) : ICourseService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICourseRepository _courseRepository = courseRepository;
     private readonly IMapper _mapper = mapper;
+    private readonly IMemoryCache _memoryCache = memoryCache;
     private readonly ILogger<CourseService> _logger = logger;
+    private readonly int _cacheExpirationMinutes = cacheSettings.Value.DefaultExpirationMinutes;
 
     public async Task<Guid> CreateCourseAsync(CreateCourseDto dto)
     {
@@ -42,6 +49,11 @@ public class CourseService(
         await _courseRepository.AddAsync(course);
         await _unitOfWork.SaveChangesAsync();
 
+        var courseDto = _mapper.Map<CourseDto>(course);
+        _memoryCache.Set(CacheKeys.Courses, courseDto, TimeSpan.FromMinutes(_cacheExpirationMinutes));
+        _memoryCache.Remove(CacheKeys.TotalCoursesCount);
+        _logger.LogDebug($"Cleared courses cache after creating course");
+
         _logger.LogInformation($"Successfully created course with ID: {course.Id}, Title: {course.Title}");
 
         return course.Id;
@@ -50,6 +62,12 @@ public class CourseService(
     public async Task<CourseDto> GetCourseByIdAsync(Guid id)
     {
         _logger.LogInformation($"Retrieving course by ID: {id}");
+
+        if (_memoryCache.TryGetValue(CacheKeys.Courses, out CourseDto? cachedCourse))
+        {
+            _logger.LogInformation($"Course found in cache for ID: {id}");
+            return cachedCourse;
+        }
 
         var course = await _courseRepository.GetByIdAsync(id);
         if (course is null)
@@ -61,6 +79,8 @@ public class CourseService(
         _logger.LogDebug($"Course retrieved from repository for ID: {id}");
 
         var courseDto = _mapper.Map<CourseDto>(course);
+        _memoryCache.Set(CacheKeys.Courses, courseDto, TimeSpan.FromMinutes(_cacheExpirationMinutes));
+        _logger.LogDebug($"Course cached for ID: {id}");
 
         _logger.LogInformation($"Successfully retrieved course: {id}");
 
@@ -137,6 +157,10 @@ public class CourseService(
         _courseRepository.Update(course);
         await _unitOfWork.SaveChangesAsync();
 
+        _memoryCache.Remove(CacheKeys.Courses);
+        _memoryCache.Remove(CacheKeys.TotalCoursesCount);
+        _logger.LogDebug($"Cleared courses cache after updating course");
+
         _logger.LogInformation($"Successfully updated course: {course.Id}, Title: {course.Title}");
     }
 
@@ -153,6 +177,10 @@ public class CourseService(
 
         _courseRepository.Delete(course);
         await _unitOfWork.SaveChangesAsync();
+
+        _memoryCache.Remove(CacheKeys.Courses);
+        _memoryCache.Remove(CacheKeys.TotalCoursesCount);
+        _logger.LogDebug($"Cleared courses cache after deleting course");
 
         _logger.LogInformation($"Successfully deleted course: {course.Id}");
     }
