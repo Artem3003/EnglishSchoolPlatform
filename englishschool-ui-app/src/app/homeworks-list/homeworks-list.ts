@@ -32,12 +32,17 @@ export class HomeworksList implements OnInit {
     this.error = '';
     this.homeworkService.getHomeworks().subscribe({
       next: (data: Homework[]) => {
-        this.homeworks = data;
+        this.homeworks = data || [];
         this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching homeworks', err);
-        this.error = 'Failed to load homeworks';
+        // If it's a 404 or the response is empty, treat it as no homeworks found
+        if (err.status === 404 || err.status === 204) {
+          this.homeworks = [];
+        } else {
+          this.error = 'Failed to load homeworks';
+        }
         this.loading = false;
       }
     });
