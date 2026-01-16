@@ -7,9 +7,10 @@ namespace Web.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Tags("Courses Management")]
-public class CoursesController(ICourseService courseService) : ControllerBase
+public class CoursesController(ICourseService courseService, IOrderService orderService) : ControllerBase
 {
     private readonly ICourseService _courseService = courseService;
+    private readonly IOrderService _orderService = orderService;
 
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateCourse([FromBody] CreateCourseDto request)
@@ -58,5 +59,21 @@ public class CoursesController(ICourseService courseService) : ControllerBase
     {
         await _courseService.DeleteCourseAsync(id);
         return NoContent();
+    }
+
+    [HttpPost("{id:guid}/buy")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddToCart(Guid id)
+    {
+        try
+        {
+            await _orderService.AddToCartAsync(id);
+            return Ok();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

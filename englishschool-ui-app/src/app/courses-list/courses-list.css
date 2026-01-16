@@ -199,3 +199,36 @@
   padding-top: 20px;
   border-top: 1px solid #ddd;
 }
+
+/* Success Message */
+.success {
+  color: #2e7d32;
+  padding: 10px;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+/* Add to Cart Button */
+.btn-add-cart {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-add-cart:hover {
+  background: #388e3c;
+  transform: translateY(-1px);
+}
+
+.btn-add-cart:active {
+  transform: translateY(0);
+}

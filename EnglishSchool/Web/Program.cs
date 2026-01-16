@@ -31,6 +31,8 @@ builder.Services.AddScoped<IHomeworkAssignmentRepository, HomeworkAssignmentRepo
 builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IStudentLessonRepository, StudentLessonRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderCourseRepository, OrderCourseRepository>();
 
 // Application Services
 builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
@@ -38,6 +40,10 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IHomeworkAssignmentService, HomeworkAssignmentService>();
 builder.Services.AddScoped<IHomeworkService, HomeworkService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+// HttpClient for Payment microservice
+builder.Services.AddHttpClient();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
