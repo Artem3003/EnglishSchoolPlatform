@@ -6,6 +6,8 @@ import { AssignmentsList } from './assignments-list/assignments-list';
 import { CalendarList } from './calendar-list/calendar-list';
 import { Cart } from './cart/cart';
 import { Orders } from './orders/orders';
+import { SigninComponent } from './signin/signin';
+import { RegisterComponent } from './register/register';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
@@ -15,6 +17,8 @@ export const routes: Routes = [
   { path: 'assignments', component: AssignmentsList },
   { path: 'calendar', component: CalendarList },
   { path: 'cart', component: Cart },
-  { path: 'orders', component: Orders }
+  { path: 'orders', component: Orders },
+  { path: 'signin', component: SigninComponent },
+  { path: 'register', component: RegisterComponent }
 ];
 
